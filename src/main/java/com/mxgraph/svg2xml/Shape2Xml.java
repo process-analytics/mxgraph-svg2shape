@@ -1528,37 +1528,40 @@ public class Shape2Xml
 	// param # starting from 1
 	public static double getPathParam(String pathString, int index)
 	{
-		pathString = pathString.replaceAll(",", ", ");
-		pathString = pathString.replaceAll("  ", " ");
-		pathString = pathString.replaceAll("E -", "E-");
-		pathString = pathString.replaceAll("e -", "e-");
+		String originalPathString = pathString;
+		try {
+			pathString = pathString.replaceAll(",", ", ");
+			pathString = pathString.replaceAll("  ", " ");
+			pathString = pathString.replaceAll("E -", "E-");
+			pathString = pathString.replaceAll("e -", "e-");
 
-		int currIndex=0;
-		int currParamIndex = 0;
+			int currIndex=0;
+			int currParamIndex = 0;
 
-		if (pathString.charAt(1) != ' ')
-		{
-			pathString = pathString.substring(0, 1) + " " + pathString.substring(1, pathString.length());
+			if (pathString.charAt(1) != ' ')
+			{
+				pathString = pathString.substring(0, 1) + " " + pathString.substring(1, pathString.length());
+			}
+
+			while (currIndex < index)
+			{
+				currParamIndex = pathString.indexOf(' ', currParamIndex + 1);
+				currIndex++;
+			}
+
+			int endIndex = pathString.indexOf(' ', currParamIndex + 1);
+
+			if (endIndex == -1)
+			{
+				endIndex = pathString.length();
+			}
+
+			String paramString = pathString.substring(currParamIndex, endIndex);
+
+			return Double.parseDouble(paramString);
+		} catch (RuntimeException e) {
+			throw new RuntimeException("Unable to get path param from '" + originalPathString + "' for index " + index, e);
 		}
-
-		while (currIndex < index)
-		{
-			currParamIndex = pathString.indexOf(' ', currParamIndex + 1);
-			currIndex++;
-		}
-
-		int endIndex = pathString.indexOf(' ', currParamIndex + 1);
-
-		if (endIndex == -1)
-		{
-			endIndex = pathString.length();
-		}
-
-		String paramString = pathString.substring(currParamIndex, endIndex);
-
-		double param = Double.valueOf(paramString);
-
-		return param;
 	}
 
 	/**
