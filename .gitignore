@@ -1,2 +1,7 @@
 classes
+target
 .DS_Store
+# Intellij
+.idea
+*.iml
+out
