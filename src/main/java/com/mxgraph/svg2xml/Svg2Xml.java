@@ -99,7 +99,8 @@ public class Svg2Xml
 		// construct destConfigDoc based on default values, groupConfigDoc and stencilConfigDoc
 		for (int i = 0; i < gui.sourceFiles.length; i++)
 		{
-			groupBaos = new ByteArrayOutputStream(); 
+			System.out.println("Processing " + gui.sourceFiles[i].getAbsolutePath());
+			groupBaos = new ByteArrayOutputStream();
 			isLastInGroup = false;
 			isNewGroup = false;
 
@@ -582,13 +583,15 @@ public class Svg2Xml
 						currentDestPath = currentDestPath.toLowerCase();
 						currentDestPath = currentDestPath.replaceAll("\\s", "_");
 						File myDestFile = new File(currentDestPath);
+						System.out.println("Prepare writing to " + myDestFile);
+
 						File myDestRoot = new File(myDestFile.getParent());
 						myDestRoot.mkdirs();
 						FileWriter fileWriter = new FileWriter(myDestFile);
 						BufferedWriter writer = new BufferedWriter(fileWriter);
 						writer.write(groupXml);
 						writer.close();
-
+						System.out.println("File written");
 					} 
 					catch(Exception ex) 
 					{
