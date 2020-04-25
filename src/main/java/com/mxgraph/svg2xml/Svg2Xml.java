@@ -571,9 +571,6 @@ public class Svg2Xml
 				}
 
 				// here we need some group naming check
-				String currentPath = sourceFiles[i].getAbsolutePath();
-				currentPath = currentPath.substring(2, currentPath.lastIndexOf("."));
-
 				if (isNewGroup)
 				{
 					// if new group then we save the old file and open a new one
@@ -612,16 +609,26 @@ public class Svg2Xml
 
 					try
 					{
-						String currentDestPath = destPath.getAbsolutePath();
-						currentDestPath += sourceFiles[i].getParent().substring(2, sourceFiles[i].getParent().length()) + ".xml";
-						currentDestPath = currentDestPath.toLowerCase();
-						currentDestPath = currentDestPath.replaceAll("\\s", "_");
-						File myDestFile = new File(currentDestPath);
-						System.out.println("Prepare writing to " + myDestFile);
+						// TODO seems to be here to recreate subfolder based on the source folder hierarchy
+						// if needed, uncomment and manage the substring 2 in another way
+						// this substring is a poor way of removing the widows drive letter from the path (this fails on Linux based OS)
+						// please see commons-io FileNameUtils to avoid such mistakes
+//						String currentDestPath = destPath.getAbsolutePath();
+//						currentDestPath += sourceFiles[i].getParent().substring(2, sourceFiles[i].getParent().length()) + ".xml";
+//						currentDestPath = currentDestPath.toLowerCase();
+//						currentDestPath = currentDestPath.replaceAll("\\s", "_");
 
-						File myDestRoot = new File(myDestFile.getParent());
-						myDestRoot.mkdirs();
-						FileWriter fileWriter = new FileWriter(myDestFile);
+						File destRoot = new File(destPath.getAbsolutePath());
+						// TODO fail if unable to mkdirs (or use commons-io)
+						destRoot.mkdirs();
+
+						String fileName = sourceFiles[i].getName();
+						fileName = fileName.substring(0, fileName.lastIndexOf('.')) + ".xml";
+						File destFile = new File(destRoot, fileName);
+						System.out.println("Prepare writing to " + destFile);
+
+						// TODO try-with-resource to improve resources management
+						FileWriter fileWriter = new FileWriter(destFile);
 						BufferedWriter writer = new BufferedWriter(fileWriter);
 						writer.write(groupXml);
 						writer.close();
