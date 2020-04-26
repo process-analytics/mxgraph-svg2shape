@@ -7,7 +7,7 @@ import static java.lang.String.format;
 
 public class StencilShapeXmlBuilder {
 
-    private List<ShapeBuilder> shapes = new ArrayList<>();
+    private final List<ShapeBuilder> shapes = new ArrayList<>();
 
     public ShapeBuilder shape(String name, String w, String h) {
         ShapeBuilder shapeBuilder = new ShapeBuilder(this, name, w, h);
@@ -23,9 +23,6 @@ public class StencilShapeXmlBuilder {
             builder.append("<connections/>");
             builder.append("<foreground>");
             builder.append("<path>");
-//            for (String child : shape.children) {
-//                builder.append(toXmlQuote(child));
-//            }
             shape.children.forEach(child ->  builder.append(toXmlQuote(child)));
             builder.append("</path>");
             builder.append("<fillstroke/>");
@@ -43,10 +40,6 @@ public class StencilShapeXmlBuilder {
     private String toXmlQuote(String s, Object... args) {
         return toXmlQuote(format(s, args));
     }
-
-//    private String toXmlQuote(String input) {
-//        return input.replaceAll("'", "\"");
-//    }
 
 
     public static class ShapeBuilder {
