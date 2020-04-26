@@ -78,7 +78,7 @@ public class Svg2XmlGui implements ActionListener{
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) 
+	public static void main(String[] args)
 	{
 		Svg2XmlGui gui = new Svg2XmlGui();
 		gui.startHere(args, gui);
@@ -89,121 +89,121 @@ public class Svg2XmlGui implements ActionListener{
 		if (args.length>0)
 		{
 			Svg2Xml.main(args);
+			return; // prevent the GUI to show up after processing
 		}
-		else
-		{
-			JFrame frame = new JFrame();
 
-			JPanel filePanel = new JPanel(new GridLayout(1,2));
-			JPanel settingsPanel = new JPanel();
-			JPanel buttonsPanel = new JPanel();
-			JPanel rightPanel = new JPanel();
+		JFrame frame = new JFrame();
 
-			JLabel sourceLabel = new JLabel("Source file(s) or folder");
-			JLabel destinationLabel = new JLabel("Destination folder");
-			JPanel sourcePanel = new JPanel();
-			JPanel destinationPanel = new JPanel();
+		JPanel filePanel = new JPanel(new GridLayout(1,2));
+		JPanel settingsPanel = new JPanel();
+		JPanel buttonsPanel = new JPanel();
+		JPanel rightPanel = new JPanel();
 
-			JButton startButton = new JButton("Start");
-			JButton cancelButton = new JButton("Cancel");
-			cancelButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					System.exit(0);
-				}});
+		JLabel sourceLabel = new JLabel("Source file(s) or folder");
+		JLabel destinationLabel = new JLabel("Destination folder");
+		JPanel sourcePanel = new JPanel();
+		JPanel destinationPanel = new JPanel();
 
-			sourceFileListComponent.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-			sourceFileListComponent.setMultiSelectionEnabled(true);
+		JButton startButton = new JButton("Start");
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}});
 
-			destinationComponent.setPreferredSize(new Dimension(400,500));
-			destinationComponent.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			sourceFileListComponent.setControlButtonsAreShown(false);
-			destinationComponent.setControlButtonsAreShown(false);
+		sourceFileListComponent.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		sourceFileListComponent.setMultiSelectionEnabled(true);
 
-			sourcePanel.setLayout(new BoxLayout(sourcePanel, BoxLayout.Y_AXIS));
-			sourcePanel.add(sourceLabel);
-			sourcePanel.add(sourceFileListComponent);
+		destinationComponent.setPreferredSize(new Dimension(400,500));
+		destinationComponent.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		sourceFileListComponent.setControlButtonsAreShown(false);
+		destinationComponent.setControlButtonsAreShown(false);
 
-			destinationPanel.setLayout(new BoxLayout(destinationPanel, BoxLayout.Y_AXIS));
-			destinationPanel.add(destinationLabel);
-			destinationPanel.add(destinationComponent);
+		sourcePanel.setLayout(new BoxLayout(sourcePanel, BoxLayout.Y_AXIS));
+		sourcePanel.add(sourceLabel);
+		sourcePanel.add(sourceFileListComponent);
 
-			calculateBorderComponent = new JCheckBox("Calculate border (or read from SVG)", calculateBorder);
-			groupStencilsComponent = new JCheckBox("(TODO)Group stencils (or each in a separate file)", groupStencils);
+		destinationPanel.setLayout(new BoxLayout(destinationPanel, BoxLayout.Y_AXIS));
+		destinationPanel.add(destinationLabel);
+		destinationPanel.add(destinationComponent);
 
-			JPanel relScalePanel = new JPanel();
-			useRelScaleComponent = new JRadioButton("Use relative scaling (dest/src):", relativeScaling);
-			relScaleComponent = new JTextField("1.00", 4);
-			relScalePanel.add(useRelScaleComponent);
-			relScalePanel.add(relScaleComponent);
+		calculateBorderComponent = new JCheckBox("Calculate border (or read from SVG)", calculateBorder);
+		groupStencilsComponent = new JCheckBox("(TODO)Group stencils (or each in a separate file)", groupStencils);
 
-			JPanel absScalePanel = new JPanel();
-			useAbsScaleComponent = new JRadioButton("(TODO)Use absolute scaling:", !relativeScaling);
-			JLabel absScaleLabel1 = new JLabel("x:");
-			absXScaleComponent = new JTextField(Double.toString(absoluteScalingX), 4);
-			JLabel absScaleLabel2 = new JLabel("px   y:");
-			absYScaleComponent = new JTextField(Double.toString(absoluteScalingY), 4);
-			JLabel absScaleLabel3 = new JLabel("px");
-			absScalePanel.add(useAbsScaleComponent);
-			absScalePanel.add(absScaleLabel1);
-			absScalePanel.add(absXScaleComponent);
-			absScalePanel.add(absScaleLabel2);
-			absScalePanel.add(absYScaleComponent);
-			absScalePanel.add(absScaleLabel3);
+		JPanel relScalePanel = new JPanel();
+		useRelScaleComponent = new JRadioButton("Use relative scaling (dest/src):", relativeScaling);
+		relScaleComponent = new JTextField("1.00", 4);
+		relScalePanel.add(useRelScaleComponent);
+		relScalePanel.add(relScaleComponent);
 
-			//Group the radio buttons.
-			ButtonGroup scaleGroup = new ButtonGroup();
-			scaleGroup.add(useRelScaleComponent);
-			scaleGroup.add(useAbsScaleComponent);
+		JPanel absScalePanel = new JPanel();
+		useAbsScaleComponent = new JRadioButton("(TODO)Use absolute scaling:", !relativeScaling);
+		JLabel absScaleLabel1 = new JLabel("x:");
+		absXScaleComponent = new JTextField(Double.toString(absoluteScalingX), 4);
+		JLabel absScaleLabel2 = new JLabel("px   y:");
+		absYScaleComponent = new JTextField(Double.toString(absoluteScalingY), 4);
+		JLabel absScaleLabel3 = new JLabel("px");
+		absScalePanel.add(useAbsScaleComponent);
+		absScalePanel.add(absScaleLabel1);
+		absScalePanel.add(absXScaleComponent);
+		absScalePanel.add(absScaleLabel2);
+		absScalePanel.add(absYScaleComponent);
+		absScalePanel.add(absScaleLabel3);
 
-			JPanel roundPanel = new JPanel();
-			roundCoordinatesComponent = new JCheckBox("Round coordinates to ", roundCoords);
-			roundDecimalNumComponent = new JTextField("2", 4);
-			JLabel decimalLabel1 = new JLabel("decimals");
-			roundPanel.add(roundCoordinatesComponent);
-			roundPanel.add(roundDecimalNumComponent);
-			roundPanel.add(decimalLabel1);
+		//Group the radio buttons.
+		ButtonGroup scaleGroup = new ButtonGroup();
+		scaleGroup.add(useRelScaleComponent);
+		scaleGroup.add(useAbsScaleComponent);
 
-			overrideLocalConfigComponent = new JCheckBox("(TODO)Override local config", true);
-			keepLogComponent = new JCheckBox("(TODO)Keep log", true);
+		JPanel roundPanel = new JPanel();
+		roundCoordinatesComponent = new JCheckBox("Round coordinates to ", roundCoords);
+		roundDecimalNumComponent = new JTextField("2", 4);
+		JLabel decimalLabel1 = new JLabel("decimals");
+		roundPanel.add(roundCoordinatesComponent);
+		roundPanel.add(roundDecimalNumComponent);
+		roundPanel.add(decimalLabel1);
 
-			filePanel.add(BorderLayout.CENTER, sourcePanel);
-			filePanel.add(BorderLayout.CENTER, destinationPanel);
+		overrideLocalConfigComponent = new JCheckBox("(TODO)Override local config", true);
+		keepLogComponent = new JCheckBox("(TODO)Keep log", true);
 
-			settingsPanel.setLayout(new GridBagLayout());
-			GridBagConstraints gbc = new GridBagConstraints();
-			gbc.gridx = 0;
-			gbc.gridy = GridBagConstraints.RELATIVE;
-			gbc.anchor = GridBagConstraints.WEST;
-			settingsPanel.add(calculateBorderComponent, gbc);
-			settingsPanel.add(groupStencilsComponent, gbc);
-			settingsPanel.add(relScalePanel, gbc);
-			settingsPanel.add(absScalePanel, gbc);
-			settingsPanel.add(roundPanel, gbc);
-			settingsPanel.add(overrideLocalConfigComponent, gbc);
-			settingsPanel.add(keepLogComponent, gbc);
+		filePanel.add(BorderLayout.CENTER, sourcePanel);
+		filePanel.add(BorderLayout.CENTER, destinationPanel);
 
-			settingsPanel.setPreferredSize(new Dimension(400,250));
-			rightPanel.setPreferredSize(new Dimension(400,400));
+		settingsPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = GridBagConstraints.RELATIVE;
+		gbc.anchor = GridBagConstraints.WEST;
+		settingsPanel.add(calculateBorderComponent, gbc);
+		settingsPanel.add(groupStencilsComponent, gbc);
+		settingsPanel.add(relScalePanel, gbc);
+		settingsPanel.add(absScalePanel, gbc);
+		settingsPanel.add(roundPanel, gbc);
+		settingsPanel.add(overrideLocalConfigComponent, gbc);
+		settingsPanel.add(keepLogComponent, gbc);
 
-			buttonsPanel.add(cancelButton);
-			buttonsPanel.add(startButton);
-			rightPanel.add(BorderLayout.NORTH, settingsPanel);
-			rightPanel.add(BorderLayout.SOUTH, buttonsPanel);
-			frame.add(BorderLayout.CENTER, filePanel);
-			frame.add(BorderLayout.EAST, rightPanel);
-			startButton.addActionListener(gui);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		settingsPanel.setPreferredSize(new Dimension(400,250));
+		rightPanel.setPreferredSize(new Dimension(400,400));
 
-			frame.setSize(1200,800);
+		buttonsPanel.add(cancelButton);
+		buttonsPanel.add(startButton);
+		rightPanel.add(BorderLayout.NORTH, settingsPanel);
+		rightPanel.add(BorderLayout.SOUTH, buttonsPanel);
+		frame.add(BorderLayout.CENTER, filePanel);
+		frame.add(BorderLayout.EAST, rightPanel);
+		startButton.addActionListener(gui);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-			// Centering the window
-			frame.setLocationRelativeTo(null);
+		frame.setSize(1200,800);
 
-			frame.setVisible(true);
-		}
+		// Centering the window
+		frame.setLocationRelativeTo(null);
+
+		frame.setVisible(true);
+
 	}
 
-	// the parser is started with args. They are parsed and sent to the svg parser class 
+	// the parser is started with args. They are parsed and sent to the svg parser class
 	public void parseArgs(String args[])
 	{
 		if (args.length>0)
@@ -251,8 +251,7 @@ public class Svg2XmlGui implements ActionListener{
 			System.out.println("Destination folder:" + destPath);
 		}
 
-		Svg2Xml svg2Xml = new Svg2Xml(this);
-		svg2Xml.convertToXml(sourceFiles, destPath);
+		new Svg2Xml(this); 
 	}
 
 
