@@ -27,18 +27,27 @@ Note about branches in this repository
 - `master` is not intended to receive any changes except updates from the upstream repository
 - the `develop` branch is the target for new features, fixes, .... and merge commits from `master`  
 
-## Run
 
-After having built the project, run
+## `svg2xml`
+
+### Run
+
+You can run `svg2xml` with or without GUI.
+- with the GUI (more details below)
 ```
 java -jar target/mxgraph-svg2shape-*-jar-with-dependencies.jar
 ```
+- without the GUI
+  - `<path_to_source>` path to the svg file to convert or path to a folder to walk through and find svg files (see the
+  GUI explanation below)
+  - `<path_to_destination>` 
+```
+java -jar target/mxgraph-svg2shape-*-jar-with-dependencies.jar <path_to_source> <path_to_destination>
+```
 
-## Svg2Xml
+### GUI Quick start guide
 
-### Quick start guide
-
-Run Svg2XmlGui. The left file system defines what files or folders you want to convert. The right one, defines the destination.
+The left file system defines what files or folders you want to convert. The right one, defines the destination.
 
 If you select one file, a single stencil XML file will be generated for just that one stencil. 
 
