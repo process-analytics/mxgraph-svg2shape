@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -76,32 +77,27 @@ public class Svg2Xml
 
 	public static void main(String[] args)
 	{
-		if(args.length == 2)
+		if(args.length < 2)
 		{
-			Svg2Xml svg2Xml = new Svg2Xml();
-			String source = args[0];
-			File dest = new File(args[1]);
-			File file = new File(source);
-			ArrayList<File> filesArrayList = new ArrayList();
-			// If it's a folder
-			if(file.isDirectory())
-			{
-				Svg2XmlGui gui = new Svg2XmlGui();
-				filesArrayList.addAll(gui.walk(file.getAbsolutePath()));
-			}
-			else if(source.endsWith(".svg"))
-			{
-				filesArrayList.add(file);
-			}
-
-			File[] sourceFiles = filesArrayList.toArray(new File[filesArrayList.size()]);
-
-			svg2Xml.convertToXml(sourceFiles, dest);
+			System.err.println("Incorrect number of arguments: you must pass the svg source file/folder and the destination folder");
+			// TODO exit
+			return;
+		}
+		File sourceArg = new File(args[0]);
+		List<File> sourceFiles = new ArrayList<>();
+		if(sourceArg.isDirectory())
+		{
+			// TODO extract this code as it is not related to the GUI
+			Svg2XmlGui gui = new Svg2XmlGui();
+			sourceFiles.addAll(gui.walk(sourceArg.getAbsolutePath()));
 		}
 		else
 		{
-			System.out.println("Incorrect number of arguments");
+			sourceFiles.add(sourceArg);
 		}
+
+		Svg2Xml svg2Xml = new Svg2Xml();
+		svg2Xml.convertToXml(sourceFiles.toArray(new File[0]), new File(args[1]));
 	}
 
 	public void convertToXml(File[] sourceFiles, File destPath) {
