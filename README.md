@@ -77,7 +77,7 @@ If you want to reduce the size, with some compromise to precision, use rounding.
 **DISCLAIMER**: this tool is at its early stage and miss a lot of features. See the GitHub issues (create one for
 any questions and prior submitting a Pull Request for discussions)
 
-**GOAL**: translate an XML mxGraph stencil definition into a set of corresponding javascript command for an easy integration in JS programs
+**GOAL**: translate an XML mxGraph stencil definition into a set of corresponding javascript calls for an easy integration in JS programs
 
 ### Run
 
