@@ -67,16 +67,13 @@ public class Svg2Xml
 	public Svg2Xml(Svg2XmlGui gui)
 	{
 		destConfigDoc = new XmlConfig(gui);
-		//convertToXml(gui);
+		convertToXml(gui.sourceFiles, gui.destPath);
 	}
 
 	public Svg2Xml(){
 		destConfigDoc = new XmlConfig();
 	}
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args)
 	{
 		if(args.length == 2)
