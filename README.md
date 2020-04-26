@@ -23,6 +23,10 @@ easy integration in JS programs
 ./mvnw package
 ```
 
+Note about branches in this repository
+- `master` is not intended to receive any changes except updates from the upstream repository
+- the `develop` branch is the target for new features, fixes, .... and merge commits from `master`  
+
 ## Run
 
 After having built the project, run
