@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'
+      - LICENSE
+  pull_request:
+    branches:
+      - develop
+    paths-ignore:
+      - '.gitignore'
+      - '*.md'
+      - LICENSE
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os.name }}
+    strategy:
+      # we want to run the full build on all os: don't cancel running jobs even if one fails
+      fail-fast: false
+      matrix:
+        os:
+          - { name: ubuntu-latest}
+          - { name: macos-latest }
+          - { name: windows-latest }
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: build
+        run: |
+          ./mvnw -V package
