@@ -78,7 +78,7 @@ public class Svg2XmlGui implements ActionListener{
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) 
+	public static void main(String[] args)
 	{
 		Svg2XmlGui gui = new Svg2XmlGui();
 		gui.startHere(args, gui);
@@ -89,6 +89,7 @@ public class Svg2XmlGui implements ActionListener{
 		if (args.length>0)
 		{
 			Svg2Xml.main(args);
+			return; // prevent the GUI to show up after processing
 		}
 
 		JFrame frame = new JFrame();
@@ -202,7 +203,7 @@ public class Svg2XmlGui implements ActionListener{
 
 	}
 
-	// the parser is started with args. They are parsed and sent to the svg parser class 
+	// the parser is started with args. They are parsed and sent to the svg parser class
 	public void parseArgs(String args[])
 	{
 		if (args.length>0)

@@ -60,6 +60,11 @@ public class XmlConfig
 		setRoundCoords(gui.isRoundCoords());
 		setDecimalsToRound(gui.getDecimalsToRound());
 	}
+
+	public XmlConfig()
+	{
+
+	}
 	
 	public boolean isBackground()
 	{

@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -67,6 +68,39 @@ public class Svg2Xml
 	public Svg2Xml(Svg2XmlGui gui)
 	{
 		destConfigDoc = new XmlConfig(gui);
+		convertToXml(gui.sourceFiles, gui.destPath);
+	}
+
+	public Svg2Xml(){
+		destConfigDoc = new XmlConfig();
+	}
+
+	public static void main(String[] args)
+	{
+		if(args.length < 2)
+		{
+			System.err.println("Incorrect number of arguments: you must pass the svg source file/folder and the destination folder");
+			// TODO exit
+			return;
+		}
+		File sourceArg = new File(args[0]);
+		List<File> sourceFiles = new ArrayList<>();
+		if(sourceArg.isDirectory())
+		{
+			// TODO extract this code as it is not related to the GUI
+			Svg2XmlGui gui = new Svg2XmlGui();
+			sourceFiles.addAll(gui.walk(sourceArg.getAbsolutePath()));
+		}
+		else
+		{
+			sourceFiles.add(sourceArg);
+		}
+
+		Svg2Xml svg2Xml = new Svg2Xml();
+		svg2Xml.convertToXml(sourceFiles.toArray(new File[0]), new File(args[1]));
+	}
+
+	public void convertToXml(File[] sourceFiles, File destPath) {
 		// order of actions:
 		//1. Config settings are given default values combined with the settings from the UI.
 		//2. check if additional config files exist. Those are the group config and individual stencil config files in XML format. If they exist, they are combined and the config settings are altered accordingly.
@@ -89,29 +123,29 @@ public class Svg2Xml
 		//20. add the new element to the XML
 		//21. write the document to a file
 
-		// TODO add SVG viewbox support, or manual setting of viewbox 
+		// TODO add SVG viewbox support, or manual setting of viewbox
 
 		boolean isLastInGroup = true;
 		boolean isNewGroup = true;
 		String groupXml = new String();
-		ByteArrayOutputStream groupBaos = new ByteArrayOutputStream(); 
+		ByteArrayOutputStream groupBaos = new ByteArrayOutputStream();
 
 		// construct destConfigDoc based on default values, groupConfigDoc and stencilConfigDoc
-		for (int i = 0; i < gui.sourceFiles.length; i++)
+		for (int i = 0; i < sourceFiles.length; i++)
 		{
-			System.out.println("Processing " + gui.sourceFiles[i].getAbsolutePath());
+			System.out.println("Processing " + sourceFiles[i].getAbsolutePath());
 			groupBaos = new ByteArrayOutputStream();
 			isLastInGroup = false;
 			isNewGroup = false;
 
-			String shapeName = gui.sourceFiles[i].getName();
+			String shapeName = sourceFiles[i].getName();
 			shapeName = shapeName.substring(0, shapeName.lastIndexOf("."));
 			int configCount = 0;
 
 			// looking for a group config file
 			String groupConfigString = null;
 
-			String configNameString = gui.sourceFiles[i].getParent();
+			String configNameString = sourceFiles[i].getParent();
 			configNameString += "_config.xml";
 			File testFile = new File(configNameString);
 
@@ -126,7 +160,7 @@ public class Svg2Xml
 			// looking for a stencil config file
 			String stencilConfigString = null;
 
-			configNameString = gui.sourceFiles[i].getAbsolutePath();
+			configNameString = sourceFiles[i].getAbsolutePath();
 			int pointIndex = configNameString.lastIndexOf('.');
 			configNameString = configNameString.substring(0, pointIndex) + "_config.xml";
 
@@ -267,7 +301,7 @@ public class Svg2Xml
 			//TODO probably done more elegantly via DOM
 			String srcXmlString;
 
-			srcXmlString = readFile(gui.sourceFiles[i].getAbsolutePath());
+			srcXmlString = readFile(sourceFiles[i].getAbsolutePath());
 			int doctypeIndex = srcXmlString.indexOf("<!DOCTYPE");
 
 			if (doctypeIndex>-1)
@@ -280,7 +314,7 @@ public class Svg2Xml
 
 			srcSVGDoc = parseXml(srcXmlString);
 			srcSVGDoc = flattenSvg(srcSVGDoc);
-			
+
 			//TODO remove connection points
 			Connection svgConnects = getConnections(srcSVGDoc);
 			srcSVGDoc = removeConnections(srcSVGDoc);
@@ -295,11 +329,11 @@ public class Svg2Xml
 
 			//recalculate connections to relative coords
 			ArrayList<Constraint> constraints = svgConnects.getConstraints();
-			
+
 			for (int j=0; j < constraints.size(); j++)
 			{
 				Constraint currConstraint = constraints.get(j);
-				
+
 				double x = currConstraint.getX() - bounds.getMinX();
 				x = Math.round(x * 100.0 / bounds.getWidth()) / 100.0;
 				currConstraint.setX(x);
@@ -308,7 +342,7 @@ public class Svg2Xml
 				y = Math.round(y * 100.0 / bounds.getHeight()) / 100.0;
 				currConstraint.setY(y);
 			}
-			
+
 			double stencilBoundsMinX = 0;
 			double stencilBoundsMinY = 0;
 			double stencilBoundsMaxX = 5;
@@ -332,16 +366,16 @@ public class Svg2Xml
 				stencilBoundsX = 5;
 				double oldStencilBoundsMaxX = stencilBoundsMaxX;
 				double oldStencilBoundsMinX = stencilBoundsMinX;
-				stencilBoundsMaxX = (oldStencilBoundsMaxX + oldStencilBoundsMinX) / 2.0d + 2.5; 
-				stencilBoundsMinX = (oldStencilBoundsMaxX + oldStencilBoundsMinX) / 2.0d - 2.5; 
+				stencilBoundsMaxX = (oldStencilBoundsMaxX + oldStencilBoundsMinX) / 2.0d + 2.5;
+				stencilBoundsMinX = (oldStencilBoundsMaxX + oldStencilBoundsMinX) / 2.0d - 2.5;
 			}
 			if (stencilBoundsY<5)
 			{
 				stencilBoundsY = 5;
 				double oldStencilBoundsMaxY = stencilBoundsMaxY;
 				double oldStencilBoundsMinY = stencilBoundsMinY;
-				stencilBoundsMaxY = (oldStencilBoundsMaxY + oldStencilBoundsMinY) / 2.0d + 2.5; 
-				stencilBoundsMinY = (oldStencilBoundsMaxY + oldStencilBoundsMinY) / 2.0d - 2.5; 
+				stencilBoundsMaxY = (oldStencilBoundsMaxY + oldStencilBoundsMinY) / 2.0d + 2.5;
+				stencilBoundsMinY = (oldStencilBoundsMaxY + oldStencilBoundsMinY) / 2.0d - 2.5;
 			}
 
 			destConfigDoc.setStencilBoundsX(stencilBoundsX);
@@ -440,7 +474,7 @@ public class Svg2Xml
 
 					if (isRestoreNeeded(oldStyle, currStyle))
 					{
-						Node bg = destDoc.getElementsByTagName("background").item(0); 
+						Node bg = destDoc.getElementsByTagName("background").item(0);
 						Node fg = destDoc.getElementsByTagName("foreground").item(0);
 
 						if (bg != null)
@@ -503,8 +537,8 @@ public class Svg2Xml
 				}
 				else
 				{
-					String currParent = gui.sourceFiles[i].getParent();
-					String oldParent = gui.sourceFiles[i-1].getParent();
+					String currParent = sourceFiles[i].getParent();
+					String oldParent = sourceFiles[i-1].getParent();
 
 					if(currParent.equals(oldParent))
 					{
@@ -517,14 +551,14 @@ public class Svg2Xml
 				}
 
 				//check if this is the last file in the group
-				if (i + 1 == gui.sourceFiles.length)
+				if (i + 1 == sourceFiles.length)
 				{
 					isLastInGroup = true;
 				}
 				else
 				{
-					String currParent = gui.sourceFiles[i].getParent();
-					String nextParent = gui.sourceFiles[i+1].getParent();
+					String currParent = sourceFiles[i].getParent();
+					String nextParent = sourceFiles[i+1].getParent();
 
 					if(currParent.equals(nextParent))
 					{
@@ -537,14 +571,14 @@ public class Svg2Xml
 				}
 
 				// here we need some group naming check
-				String currentPath = gui.sourceFiles[i].getAbsolutePath();
+				String currentPath = sourceFiles[i].getAbsolutePath();
 				currentPath = currentPath.substring(2, currentPath.lastIndexOf("."));
 
 				if (isNewGroup)
 				{
 					// if new group then we save the old file and open a new one
 					String groupName = stencilUserMarker;
-					File currFile = new File(gui.sourceFiles[i].getAbsolutePath());
+					File currFile = new File(sourceFiles[i].getAbsolutePath());
 					ArrayList <String> folders = new ArrayList <String>();
 
 					while (!currFile.getParentFile().getName().equals("svgroot") && currFile.getParent().length() > 4)
@@ -578,8 +612,8 @@ public class Svg2Xml
 
 					try
 					{
-						String currentDestPath = gui.destPath.getAbsolutePath();
-						currentDestPath += gui.sourceFiles[i].getParent().substring(2, gui.sourceFiles[i].getParent().length()) + ".xml";
+						String currentDestPath = destPath.getAbsolutePath();
+						currentDestPath += sourceFiles[i].getParent().substring(2, sourceFiles[i].getParent().length()) + ".xml";
 						currentDestPath = currentDestPath.toLowerCase();
 						currentDestPath = currentDestPath.replaceAll("\\s", "_");
 						File myDestFile = new File(currentDestPath);
@@ -592,8 +626,8 @@ public class Svg2Xml
 						writer.write(groupXml);
 						writer.close();
 						System.out.println("File written");
-					} 
-					catch(Exception ex) 
+					}
+					catch(Exception ex)
 					{
 						ex.printStackTrace();
 					}
@@ -1186,13 +1220,6 @@ public class Svg2Xml
 		}
 
 		return null;
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args)
-	{
 	}
 
 	/**
