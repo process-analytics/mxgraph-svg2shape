@@ -70,3 +70,33 @@ If other than 1.00, the resulting stencils will be bigger or smaller compared to
 #### Round coordinates
 
 If you want to reduce the size, with some compromise to precision, use rounding. For stencils bigger than 100x100 rounding to 2 decimal points is usually a decent choice.
+
+
+## `xml2js`
+
+**DISCLAIMER**: this tool is at its early stage and miss a lot of features. See the GitHub issues (create one for
+any questions and prior submitting a Pull Request for discussions)
+
+**GOAL**: translate an XML mxGraph stencil definition into a set of corresponding javascript calls for an easy integration in JS programs
+
+### Run
+
+`xml2js` required the following arguments
+- `<path_to_source>` path to the xml file containing the mxGraph stencil shape to convert to javascript code
+```
+java -cp target/mxgraph-svg2shape-*-jar-with-dependencies.jar com.mxgraph.xml2js.Xml2Js <path_to_source>
+```
+
+### Generated code
+
+The tool writes the generated code in the console
+``` javascript
+// foreground
+canvas.begin();
+canvas.moveTo(19.87, 0);
+canvas.curveTo(11.98, 0, 5.55, 6.42, 5.55, 14.32);
+canvas.lineTo(5.55, 18.4);
+
+canvas.close();
+canvas.fillAndStroke();
+```
