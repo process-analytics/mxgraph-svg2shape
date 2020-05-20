@@ -164,6 +164,12 @@ public class Xml2Js {
                         element.getAttribute("x2"), element.getAttribute("y2"),
                         element.getAttribute("x3"), element.getAttribute("y3")));
                 break;
+            case "arc":
+                generateCanvasMethodCall(format("arcTo(%s, %s, %s, %s, %s, %s, %s)",
+                        element.getAttribute("rx"), element.getAttribute("ry"), element.getAttribute("x-axis-rotation"),
+                        element.getAttribute("large-arc-flag"), element.getAttribute("sweep-flag"), element.getAttribute("x"), element.getAttribute("y"))
+                );
+                break;
             case "line":
                 generateCanvasMethodCall(format("lineTo(%s, %s)", element.getAttribute("x"), element.getAttribute("y")));
                 break;
