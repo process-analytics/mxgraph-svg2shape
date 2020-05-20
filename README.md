@@ -1,4 +1,8 @@
 # mxgraph-svg2shape
+[![Build](https://github.com/process-analytics//mxgraph-svg2shape/workflows/Build/badge.svg)](https://github.com/process-analytics/mxgraph-svg2shape/actions)
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/process-analytics/mxgraph-svg2shape?color=orange&include_prereleases)](https://github.com/process-analytics/mxgraph-svg2shape/releases)
+
+
 
 A set of tool to convert SVG files into mxGraph resources.
 
