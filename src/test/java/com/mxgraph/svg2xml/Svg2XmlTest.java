@@ -17,7 +17,7 @@ class Svg2XmlTest {
         Svg2Xml svg2Xml = new Svg2Xml();
 
         File destPath = destinationFolder("Simple-Single file");
-        svg2Xml.convertToXml(svgSourceFiles("simple/circle-green.svg"), destPath);
+        svg2Xml.convertToXml(svgSourceFiles("simple-01/circle-green.svg"), destPath);
 
         File expectedGeneratedFile = new File(destPath, "circle-green.xml");
         assertThat(expectedGeneratedFile).isFile();
@@ -32,7 +32,7 @@ class Svg2XmlTest {
         Svg2Xml svg2Xml = new Svg2Xml();
 
         File destPath = destinationFolder("Simple-Two files");
-        svg2Xml.convertToXml(svgSourceFiles("simple/circle-green.svg", "simple/rectangle-blue.svg"), destPath);
+        svg2Xml.convertToXml(svgSourceFiles("simple-01/circle-green.svg", "simple-01/rectangle-blue.svg"), destPath);
 
         File expectedGeneratedFile = new File(destPath, "rectangle-blue.xml"); // use base name of the latest svg file in the source folder
         assertThat(expectedGeneratedFile).isFile();
@@ -41,6 +41,22 @@ class Svg2XmlTest {
                 "<ellipse h=\"200\" w=\"200\" x=\"0\" y=\"0\"/>"
         );
         // TODO check that the file contains the 2 shapes
+    }
+
+    @Test
+    void convertToXml_files_from_the_various_folders() {
+        Svg2Xml svg2Xml = new Svg2Xml();
+
+        File destPath = destinationFolder("various folders");
+        // in the current implementation, the files are supposed to be passed ordered by folder
+        svg2Xml.convertToXml(svgSourceFiles("simple-01/circle-green.svg", "simple-01/rectangle-blue.svg", "simple-02/path-blue.svg"), destPath);
+
+        File expectedGeneratedFile = new File(destPath, "path-blue.xml");
+        assertThat(expectedGeneratedFile).isFile();
+        assertThat(fileContent(expectedGeneratedFile)).contains(
+                "<quad x1=\"20\" x2=\"30\" y1=\"0\" y2=\"25\"/>",
+                "<quad x1=\"40\" x2=\"70\" y1=\"50\" y2=\"25\"/>"
+        );
     }
 
     // =================================================================================================================
@@ -58,6 +74,7 @@ class Svg2XmlTest {
         return new File("target/test/output/", folderName);
     }
 
+    // TODO duplicated with Xml2Js#fileContent
     // when switching to JDK11+, use Files#readString instead
     public static String fileContent(File file) {
         try {
