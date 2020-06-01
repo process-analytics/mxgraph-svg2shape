@@ -9,12 +9,12 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.io.IOException;
 import java.io.StringReader;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mxgraph.utils.FileUtils.EOL;
+import static com.mxgraph.utils.FileUtils.fileContent;
 import static java.lang.String.format;
 
 public class Xml2Js {
@@ -51,18 +51,6 @@ public class Xml2Js {
         String code = parse(fileContent);
         logInfo("Parsing completed");
         return code;
-    }
-
-    public static final String EOL = System.getProperty("line.separator");
-
-    private static String fileContent(File file) {
-        // TODO java 11 use readString
-        try {
-            List<String> strings = Files.readAllLines(file.toPath());
-            return String.join(EOL, strings);
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to read the content of " + file, e);
-        }
     }
 
     private String parse(String shapeStencilXml) {
