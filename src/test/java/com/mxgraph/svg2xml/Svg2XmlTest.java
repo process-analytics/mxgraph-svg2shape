@@ -8,17 +8,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 class Svg2XmlTest {
 
     @Test
-    void convertToXml() {
+    void convertToXml_single_file() {
         Svg2Xml svg2Xml = new Svg2Xml();
 
-        File destPath = destinationFolder("simple-conversion");
-        svg2Xml.convertToXml(new File [] {svgSourceFile("simple/green-circle.svg")}, destPath);
+        File destPath = destinationFolder("Simple-Single file");
+        svg2Xml.convertToXml(svgSourceFiles("simple/circle-green.svg"), destPath);
 
-        File expectedGeneratedFile = new File(destPath, "green-circle.xml");
+        File expectedGeneratedFile = new File(destPath, "circle-green.xml");
         assertThat(expectedGeneratedFile).isFile();
         assertThat(fileContent(expectedGeneratedFile)).contains(
                 "<fillcolor color=\"green\"/>",
@@ -26,12 +27,30 @@ class Svg2XmlTest {
         );
     }
 
+    @Test
+    void convertToXml_two_files_from_the_same_folder() {
+        Svg2Xml svg2Xml = new Svg2Xml();
+
+        File destPath = destinationFolder("Simple-Two files");
+        svg2Xml.convertToXml(svgSourceFiles("simple/circle-green.svg", "simple/rectangle-blue.svg"), destPath);
+
+        File expectedGeneratedFile = new File(destPath, "rectangle-blue.xml"); // use base name of the latest svg file in the source folder
+        assertThat(expectedGeneratedFile).isFile();
+        assertThat(fileContent(expectedGeneratedFile)).contains(
+                "<fillcolor color=\"green\"/>",
+                "<ellipse h=\"200\" w=\"200\" x=\"0\" y=\"0\"/>"
+        );
+        // TODO check that the file contains the 2 shapes
+    }
+
     // =================================================================================================================
     // UTILS
     // =================================================================================================================
 
-    private static File svgSourceFile(String fileName) {
-        return new File("src/test/resources/svg", fileName);
+    private static File[] svgSourceFiles(String... fileNames) {
+        return Arrays.stream(fileNames)
+                .map(fileName -> new File("src/test/resources/svg", fileName))
+                .toArray(File[]::new);
     }
 
     private static File destinationFolder(String folderName) {
