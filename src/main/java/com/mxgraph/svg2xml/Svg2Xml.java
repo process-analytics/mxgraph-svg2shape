@@ -609,15 +609,6 @@ public class Svg2Xml
 
 					try
 					{
-						// TODO seems to be here to recreate subfolder based on the source folder hierarchy
-						// if needed, uncomment and manage the substring 2 in another way
-						// this substring is a poor way of removing the widows drive letter from the path (this fails on Linux based OS)
-						// please see commons-io FileNameUtils to avoid such mistakes
-//						String currentDestPath = destPath.getAbsolutePath();
-//						currentDestPath += sourceFiles[i].getParent().substring(2, sourceFiles[i].getParent().length()) + ".xml";
-//						currentDestPath = currentDestPath.toLowerCase();
-//						currentDestPath = currentDestPath.replaceAll("\\s", "_");
-
 						// TODO fail if unable to mkdirs (or use commons-io)
 						destPath.mkdirs();
 
