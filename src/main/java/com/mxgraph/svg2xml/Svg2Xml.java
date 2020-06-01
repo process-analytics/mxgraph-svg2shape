@@ -618,13 +618,10 @@ public class Svg2Xml
 //						currentDestPath = currentDestPath.toLowerCase();
 //						currentDestPath = currentDestPath.replaceAll("\\s", "_");
 
-						File destRoot = new File(destPath.getAbsolutePath());
 						// TODO fail if unable to mkdirs (or use commons-io)
-						destRoot.mkdirs();
+						destPath.mkdirs();
 
-						String fileName = sourceFiles[i].getName();
-						fileName = fileName.substring(0, fileName.lastIndexOf('.')) + ".xml";
-						File destFile = new File(destRoot, fileName);
+						File destFile = new File(destPath, getBaseName(sourceFiles[i]) + ".xml");
 						System.out.println("Prepare writing to " + destFile);
 
 						// TODO try-with-resource to improve resources management
@@ -646,6 +643,15 @@ public class Svg2Xml
 			}
 		}
 
+	}
+
+	/**
+	 * Gets the base name, minus the full path and extension, from a full fileName.
+	 * <p>Naming taken from commons-io#FileNameUtils</p>
+	 */
+	private static String getBaseName(File file) {
+		String fileName = file.getName();
+		return fileName.substring(0, fileName.lastIndexOf('.'));
 	}
 
 	/**
