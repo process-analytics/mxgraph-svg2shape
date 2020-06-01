@@ -48,8 +48,9 @@ class Svg2XmlTest {
     // =================================================================================================================
 
     private static File[] svgSourceFiles(String... fileNames) {
+        File parent = new File(System.getProperty("user.dir"), "src/test/resources/svg"); // ensure we pass absolute path
         return Arrays.stream(fileNames)
-                .map(fileName -> new File("src/test/resources/svg", fileName))
+                .map(fileName -> new File(parent, fileName))
                 .toArray(File[]::new);
     }
 
