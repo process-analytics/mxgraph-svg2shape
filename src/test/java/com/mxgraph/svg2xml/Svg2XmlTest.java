@@ -1,13 +1,10 @@
 package com.mxgraph.svg2xml;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.nio.file.Files.lines;
-import static java.util.stream.Collectors.joining;
+import static com.mxgraph.utils.FileUtils.fileContent;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 class Svg2XmlTest {
@@ -72,17 +69,6 @@ class Svg2XmlTest {
 
     private static File destinationFolder(String folderName) {
         return new File("target/test/output/", folderName);
-    }
-
-    // TODO duplicated with Xml2Js#fileContent
-    // when switching to JDK11+, use Files#readString instead
-    public static String fileContent(File file) {
-        try {
-            // we do not care of having a OS related eol as we test line content here
-            return lines(file.toPath(), UTF_8).collect(joining("\n"));
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to read the content of " + file, e);
-        }
     }
 
 }
