@@ -20,4 +20,8 @@ public class FileUtils {
         }
     }
 
+    public static String fileContent(String filePath) {
+        return fileContent(new File(filePath));
+    }
+
 }

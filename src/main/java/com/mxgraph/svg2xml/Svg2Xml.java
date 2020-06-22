@@ -7,15 +7,10 @@ package com.mxgraph.svg2xml;
 
 import java.awt.Color;
 import java.awt.geom.Rectangle2D;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -46,6 +41,7 @@ import com.mxgraph.shape.mxStencilShape;
 import com.mxgraph.svg2xml.XmlConfig.aspectType;
 
 import static com.mxgraph.utils.FileUtils.EOL;
+import static com.mxgraph.utils.FileUtils.fileContent;
 
 /**
  * Executes what is defined in Svg2XmlGui
@@ -143,17 +139,14 @@ public class Svg2Xml
 			// looking for a group config file
 			String groupConfigString = null;
 
-			String configNameString = currentSourceFile.getParent();
-			configNameString += "_config.xml";
+			String configNameString = currentSourceFile.getParent() + "_config.xml";
 			File testFile = new File(configNameString);
 
 			if (testFile.exists())
 			{
-				groupConfigString = readFile(configNameString);
+				groupConfigString = fileContent(configNameString);
 				configCount++;
 			}
-
-			testFile = null;
 
 			// looking for a stencil config file
 			String stencilConfigString = null;
@@ -166,11 +159,9 @@ public class Svg2Xml
 
 			if (testFile.exists())
 			{
-				stencilConfigString = readFile(configNameString);
+				stencilConfigString = fileContent(configNameString);
 				configCount++;
 			}
-
-			testFile = null;
 
 			// now we have potentially both config files in String format
 			System.out.println("parsing " + shapeName + " using " + configCount + " configs");
@@ -299,7 +290,7 @@ public class Svg2Xml
 			//TODO probably done more elegantly via DOM
 			String srcXmlString;
 
-			srcXmlString = readFile(currentSourceFile.getAbsolutePath());
+			srcXmlString = fileContent(currentSourceFile);
 			int doctypeIndex = srcXmlString.indexOf("<!DOCTYPE");
 
 			if (doctypeIndex>-1)
@@ -1163,60 +1154,6 @@ public class Svg2Xml
 		return string;
 	}
 
-	/**
-	 * Reads the file (defined by <b>filename</b>) into a string
-	 * @param filename file to be read
-	 * @return the file content in a string
-	 */
-	public static String readFile(String filename)
-	{
-		BufferedReader reader;
-		try
-		{
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
-			StringBuffer result = new StringBuffer();
-			String tmp;
-
-			try
-			{
-				tmp = reader.readLine();
-
-				while (tmp != null)
-				{
-					result.append(tmp + System.getProperty("line.separator"));
-					try
-					{
-						tmp = reader.readLine();
-					}
-					catch (IOException e)
-					{
-						e.printStackTrace();
-					}
-				}
-
-				try
-				{
-					reader.close();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-
-				return result.toString();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		catch (FileNotFoundException e1)
-		{
-			e1.printStackTrace();
-		}
-
-		return null;
-	}
 
 	/**
 	 * Removes all defs and makes them inline, if visuals are in question, gradient fills are removed and a single color is put inline.
