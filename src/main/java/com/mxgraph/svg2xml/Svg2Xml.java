@@ -15,10 +15,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -133,7 +130,6 @@ public class Svg2Xml
 			System.out.println("Processing " + currentSourceFile.getAbsolutePath());
 			groupBaos = new ByteArrayOutputStream();
 
-			String shapeName = getBaseName(currentSourceFile);
 			int configCount = 0;
 
 			// looking for a group config file
@@ -153,6 +149,7 @@ public class Svg2Xml
 			}
 
 			// now we have potentially both config files in String format
+			String shapeName = getBaseName(currentSourceFile);
 			System.out.println("parsing " + shapeName + " using " + configCount + " configs");
 
 			ArrayList<Connection> groupConnection = null;
@@ -1433,65 +1430,26 @@ public class Svg2Xml
 		}
 	}
 
-	private Color stringToColor(String col)
-	{
+	private static Map<String, Color> nameToColors = new HashMap<>();
+	static {
+		nameToColors.put("black", Color.BLACK);
+		nameToColors.put("blue", Color.BLUE);
+		nameToColors.put("cyan", Color.CYAN);
+		nameToColors.put("darkGray", Color.DARK_GRAY);
+		nameToColors.put("gray", Color.GRAY);
+		nameToColors.put("green", Color.GREEN);
+		nameToColors.put("yellow", Color.YELLOW);
+		nameToColors.put("lightGray", Color.LIGHT_GRAY);
+		nameToColors.put("magenta", Color.MAGENTA);
+		nameToColors.put("orange", Color.ORANGE);
+		nameToColors.put("pink", Color.PINK);
+		nameToColors.put("red", Color.RED);
+		nameToColors.put("white", Color.WHITE);
+	}
+
+	private static Color stringToColor(String col) {
 		//TODO either add the extended color set too, or find a better solution
-		if (col.equals("black"))
-		{
-			return Color.BLACK;
-		}
-		else if (col.equals("blue"))
-		{
-			return Color.BLUE;
-		}
-		else if (col.equals("cyan"))
-		{
-			return Color.CYAN;
-		}
-		else if (col.equals("darkGray"))
-		{
-			return Color.DARK_GRAY;
-		}
-		else if (col.equals("gray"))
-		{
-			return Color.gray;
-		}
-		else if (col.equals("green"))
-		{
-			return Color.GREEN;
-		}
-		else if (col.equals("yellow"))
-		{
-			return Color.YELLOW;
-		}
-		else if (col.equals("lightGray"))
-		{
-			return Color.LIGHT_GRAY;
-		}
-		else if (col.equals("magenta"))
-		{
-			return Color.MAGENTA;
-		}
-		else if (col.equals("orange"))
-		{
-			return Color.ORANGE;
-		}
-		else if (col.equals("pink"))
-		{
-			return Color.PINK;
-		}
-		else if (col.equals("red"))
-		{
-			return Color.RED;
-		}
-		else if (col.equals("white"))
-		{
-			return Color.WHITE;
-		}
-		else
-		{
-			return null;
-		}
+		return nameToColors.get(col);
 	}
 
 	private void breakGroupStyle(Node root)
