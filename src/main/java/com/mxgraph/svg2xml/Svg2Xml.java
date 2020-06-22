@@ -127,8 +127,6 @@ public class Svg2Xml
 
 		// TODO add SVG viewbox support, or manual setting of viewbox
 
-		boolean isLastInGroup = true;
-		boolean isNewGroup = true;
 		String groupXml = new String();
 		ByteArrayOutputStream groupBaos = new ByteArrayOutputStream();
 
@@ -138,8 +136,6 @@ public class Svg2Xml
 			File currentSourceFile = sourceFiles[i];
 			System.out.println("Processing " + currentSourceFile.getAbsolutePath());
 			groupBaos = new ByteArrayOutputStream();
-			isLastInGroup = false;
-			isNewGroup = false;
 
 			String shapeName = getBaseName(currentSourceFile);
 			int configCount = 0;
@@ -532,6 +528,8 @@ public class Svg2Xml
 				}
 
 				//21. write the document to a file
+				boolean isLastInGroup;
+				boolean isNewGroup;
 				//check if a new group is started
 				if (i == 0)
 				{
@@ -573,40 +571,15 @@ public class Svg2Xml
 				}
 
 				// here we need some group naming check
-				if (isNewGroup)
-				{
-					// if new group then we save the old file and open a new one
-					String groupName = stencilUserMarker;
-					File currFile = new File(currentSourceFile.getAbsolutePath());
-					ArrayList <String> folders = new ArrayList <String>();
-
-					while (!currFile.getParentFile().getName().equals("svgroot") && currFile.getParent().length() > 4)
-					{
-						currFile = currFile.getParentFile();
-						folders.add(0, currFile.getName());
-					}
-
-					for (int j = 0; j < folders.size(); j++)
-					{
-						groupName += "." + folders.get(j);
-					}
-
-					groupXml = "<shapes name=\"" + groupName + "\">" + EOL;
-					String tmp = Svg2Xml.printDocumentString(destDoc, groupBaos);
-					tmp = tmp.replaceAll("\\.0\"", "\"");
-					groupXml += tmp;
+				if (isNewGroup) {
+					groupXml = "<shapes name=\"" + computeShapeGroupName(currentSourceFile) + "\">" + EOL;
 				}
-				else
-				{
-					// if not a new group then we just add the xml to the group xml
-					groupXml += Svg2Xml.printDocumentString(destDoc, groupBaos);
-				}
+				groupXml += printDocumentString(destDoc, groupBaos);
 
 				// save the xml
 				if(isLastInGroup)
 				{
 					groupXml += "</shapes>";
-
 					groupXml = groupXml.replaceAll("\\.+0\"", "\"");
 
 					try
@@ -645,6 +618,23 @@ public class Svg2Xml
 	private static String getBaseName(File file) {
 		String fileName = file.getName();
 		return fileName.substring(0, fileName.lastIndexOf('.'));
+	}
+
+	private String computeShapeGroupName(File currentSourceFile) {
+		List <String> groupNameElements = new ArrayList<>();
+
+		File currFile = new File(currentSourceFile.getAbsolutePath());
+		// TODO remove this too specific checks
+		// svgroot: if kept, should be documented
+		// .length() > 4: poor way to manage windows drive
+		// TODO use commons-io.FileNameUtils#getPath to get the path without prefix (windows drive or unix tilda)
+		while (!currFile.getParentFile().getName().equals("svgroot") && currFile.getParent().length() > 4) {
+			currFile = currFile.getParentFile();
+			groupNameElements.add(0, currFile.getName());
+		}
+		groupNameElements.add(0, stencilUserMarker);
+
+		return String.join(".", groupNameElements);
 	}
 
 	/**
