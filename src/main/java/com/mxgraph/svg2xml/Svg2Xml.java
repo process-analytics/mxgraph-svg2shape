@@ -561,12 +561,12 @@ public class Svg2Xml
 
 					try
 					{
-						// TODO fail if unable to mkdirs (or use commons-io)
-						destPath.mkdirs();
-
 						File destFile = new File(destPath, getBaseName(currentSourceFile) + ".xml");
 						System.out.println("Prepare writing to " + destFile);
 
+						// TODO use commons-io FileUtils#writeStringToFile
+						// TODO fail if unable to mkdirs (or use commons-io)
+						destPath.mkdirs();
 						// TODO try-with-resource to improve resources management
 						FileWriter fileWriter = new FileWriter(destFile);
 						BufferedWriter writer = new BufferedWriter(fileWriter);
