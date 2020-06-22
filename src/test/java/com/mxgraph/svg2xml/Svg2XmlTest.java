@@ -41,10 +41,10 @@ class Svg2XmlTest {
     }
 
     @Test
-    void convertToXml_files_from_the_various_folders() {
+    void convertToXml_files_from_two_folders_without_subfolders_files_given_ordered_by_folders() {
         Svg2Xml svg2Xml = new Svg2Xml();
 
-        File destPath = destinationFolder("various folders");
+        File destPath = destinationFolder("files from 2 folders - no subfolders");
         // in the current implementation, the files are supposed to be passed ordered by folder
         svg2Xml.convertToXml(svgSourceFiles("simple-01/circle-green.svg", "simple-01/rectangle-blue.svg", "simple-02/path-blue.svg"), destPath);
 
