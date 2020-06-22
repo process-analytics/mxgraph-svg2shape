@@ -45,6 +45,8 @@ import org.xml.sax.InputSource;
 import com.mxgraph.shape.mxStencilShape;
 import com.mxgraph.svg2xml.XmlConfig.aspectType;
 
+import static com.mxgraph.utils.FileUtils.EOL;
+
 /**
  * Executes what is defined in Svg2XmlGui
  */
@@ -133,19 +135,19 @@ public class Svg2Xml
 		// construct destConfigDoc based on default values, groupConfigDoc and stencilConfigDoc
 		for (int i = 0; i < sourceFiles.length; i++)
 		{
-			System.out.println("Processing " + sourceFiles[i].getAbsolutePath());
+			File currentSourceFile = sourceFiles[i];
+			System.out.println("Processing " + currentSourceFile.getAbsolutePath());
 			groupBaos = new ByteArrayOutputStream();
 			isLastInGroup = false;
 			isNewGroup = false;
 
-			String shapeName = sourceFiles[i].getName();
-			shapeName = shapeName.substring(0, shapeName.lastIndexOf("."));
+			String shapeName = getBaseName(currentSourceFile);
 			int configCount = 0;
 
 			// looking for a group config file
 			String groupConfigString = null;
 
-			String configNameString = sourceFiles[i].getParent();
+			String configNameString = currentSourceFile.getParent();
 			configNameString += "_config.xml";
 			File testFile = new File(configNameString);
 
@@ -160,7 +162,7 @@ public class Svg2Xml
 			// looking for a stencil config file
 			String stencilConfigString = null;
 
-			configNameString = sourceFiles[i].getAbsolutePath();
+			configNameString = currentSourceFile.getAbsolutePath();
 			int pointIndex = configNameString.lastIndexOf('.');
 			configNameString = configNameString.substring(0, pointIndex) + "_config.xml";
 
@@ -301,7 +303,7 @@ public class Svg2Xml
 			//TODO probably done more elegantly via DOM
 			String srcXmlString;
 
-			srcXmlString = readFile(sourceFiles[i].getAbsolutePath());
+			srcXmlString = readFile(currentSourceFile.getAbsolutePath());
 			int doctypeIndex = srcXmlString.indexOf("<!DOCTYPE");
 
 			if (doctypeIndex>-1)
@@ -537,7 +539,7 @@ public class Svg2Xml
 				}
 				else
 				{
-					String currParent = sourceFiles[i].getParent();
+					String currParent = currentSourceFile.getParent();
 					String oldParent = sourceFiles[i-1].getParent();
 
 					if(currParent.equals(oldParent))
@@ -557,7 +559,7 @@ public class Svg2Xml
 				}
 				else
 				{
-					String currParent = sourceFiles[i].getParent();
+					String currParent = currentSourceFile.getParent();
 					String nextParent = sourceFiles[i+1].getParent();
 
 					if(currParent.equals(nextParent))
@@ -575,7 +577,7 @@ public class Svg2Xml
 				{
 					// if new group then we save the old file and open a new one
 					String groupName = stencilUserMarker;
-					File currFile = new File(sourceFiles[i].getAbsolutePath());
+					File currFile = new File(currentSourceFile.getAbsolutePath());
 					ArrayList <String> folders = new ArrayList <String>();
 
 					while (!currFile.getParentFile().getName().equals("svgroot") && currFile.getParent().length() > 4)
@@ -589,7 +591,7 @@ public class Svg2Xml
 						groupName += "." + folders.get(j);
 					}
 
-					groupXml = "<shapes name=\"" + groupName + "\">" + System.getProperty("line.separator");
+					groupXml = "<shapes name=\"" + groupName + "\">" + EOL;
 					String tmp = Svg2Xml.printDocumentString(destDoc, groupBaos);
 					tmp = tmp.replaceAll("\\.0\"", "\"");
 					groupXml += tmp;
@@ -612,7 +614,7 @@ public class Svg2Xml
 						// TODO fail if unable to mkdirs (or use commons-io)
 						destPath.mkdirs();
 
-						File destFile = new File(destPath, getBaseName(sourceFiles[i]) + ".xml");
+						File destFile = new File(destPath, getBaseName(currentSourceFile) + ".xml");
 						System.out.println("Prepare writing to " + destFile);
 
 						// TODO try-with-resource to improve resources management
