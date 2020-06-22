@@ -138,28 +138,17 @@ public class Svg2Xml
 
 			// looking for a group config file
 			String groupConfigString = null;
-
-			String configNameString = currentSourceFile.getParent() + "_config.xml";
-			File testFile = new File(configNameString);
-
-			if (testFile.exists())
-			{
-				groupConfigString = fileContent(configNameString);
+			File testFile = new File(currentSourceFile.getParent() + "_config.xml");
+			if (testFile.exists()) {
+				groupConfigString = fileContent(currentSourceFile.getParent() + "_config.xml");
 				configCount++;
 			}
 
 			// looking for a stencil config file
 			String stencilConfigString = null;
-
-			configNameString = currentSourceFile.getAbsolutePath();
-			int pointIndex = configNameString.lastIndexOf('.');
-			configNameString = configNameString.substring(0, pointIndex) + "_config.xml";
-
-			testFile = new File(configNameString);
-
-			if (testFile.exists())
-			{
-				stencilConfigString = fileContent(configNameString);
+			testFile = new File(currentSourceFile.getParent(), getBaseName(currentSourceFile) + "_config.xml");
+			if (testFile.exists()) {
+				stencilConfigString = fileContent(currentSourceFile.getParent() + "_config.xml");
 				configCount++;
 			}
 
