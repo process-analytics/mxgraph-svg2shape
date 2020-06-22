@@ -9,7 +9,7 @@ import static java.util.stream.Collectors.joining;
 
 public class FileUtils {
 
-    public static final String EOL = System.getProperty("line.separator");
+    public static final String EOL = System.lineSeparator();
 
     // when switching to JDK11+, use Files#readString instead
     public static String fileContent(File file) {
