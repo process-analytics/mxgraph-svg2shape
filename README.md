@@ -10,11 +10,12 @@ This repository is based on mxGraph svg2xml tooling: `SVG to XML mxGraph stencil
 created for internal use, so there are lots of things unfinished.`
 
 It contains the original svg2xml tool; it aims to improve it and to add the following features
-- modernize `svg2xml` and contribute improvements to the upstream repository (if it is still active and accept
+- modernize [svg2xml](#svg2xml) and contribute improvements to the upstream repository (if it is still active and accept
  contributions): CLI, UI look&feel updates, implement to completed features....
-- add `xml2js` tool: translate an XML mxGraph stencil definition into a set of corresponding javascript command for an
+- add [xml2js](#xml2js): translate an XML mxGraph stencil definition into a set of corresponding javascript command for an
 easy integration in JS programs
-- add `svg2js`: directly convert an SVG file into a set of javascript commands
+- add [svg2js](#svg2js): convert an SVG file into a set of `mxGraph` javascript commands
+xml2js
 
 
 ## Build
@@ -78,8 +79,9 @@ If you want to reduce the size, with some compromise to precision, use rounding.
 
 ## `xml2js`
 
-**DISCLAIMER**: this tool is at its early stage and miss a lot of features. See the GitHub issues (create one for
-any questions and prior submitting a Pull Request for discussions)
+**DISCLAIMER**: this tool is at its early stage and misses a lot of features. See the GitHub issues (create one for
+any questions and prior submitting a Pull Request for discussions). It is mainly developed to provide the foundation for `svg2js` 
+
 
 **GOAL**: translate an XML mxGraph stencil definition into a set of corresponding javascript calls for an easy integration in JS programs
 
@@ -104,3 +106,16 @@ canvas.lineTo(5.55, 18.4);
 canvas.close();
 canvas.fillAndStroke();
 ```
+
+## `svg2js`
+
+**GOAL**: convert an SVG file into a set of `mxGraph` javascript commands, by calling `svg2xml` then `xml2js` 
+
+### Run
+
+`svg2js` required the following arguments
+- `<path_to_source>` path to the SVG file to convert to javascript code
+```
+java -cp target/mxgraph-svg2shape-*-jar-with-dependencies.jar com.mxgraph.svg2js.Svg2Js <path_to_source>
+```
+

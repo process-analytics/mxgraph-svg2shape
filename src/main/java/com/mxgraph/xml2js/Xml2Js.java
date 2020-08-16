@@ -170,13 +170,13 @@ public class Xml2Js {
 
     private void logInfo(String msg) {
         if (isInfoLogActivated) {
-            System.out.println(format("[INFO] %s", msg));
+            System.out.println(format("Xml2Js [INFO] %s", msg));
         }
     }
 
     private void logDebug(String msg) {
         if (isDebugLogActivated) {
-            System.out.println(format("[DEBUG] %s", msg));
+            System.out.println(format("Xml2Js [DEBUG] %s", msg));
         }
     }
 
