@@ -25,7 +25,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
+//import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -662,7 +662,9 @@ public class Svg2Xml
 			}
 		}
 
-		JOptionPane.showMessageDialog(gui.getFrame(), "Conversion completed.\nThe libraries are genereted in:" + destFolders);
+		// TODO: if we need to have a dialog message in the GUI, we should
+		// provide a PR in the upstream repository to ensure there is no GUI code here (this prevents usage of the tool with the CLI)
+		// JOptionPane.showMessageDialog(gui.getFrame(), "Conversion completed.\nThe libraries are genereted in:" + destFolders);
 	}
 
 	/**
