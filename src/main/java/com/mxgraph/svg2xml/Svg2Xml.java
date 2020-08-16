@@ -64,7 +64,9 @@ public class Svg2Xml
 	private XmlConfig destConfigDoc = null;
 
 	//user identifier, mxGraph is default, but every user should come up with his own identifier, to avoid conflicts with mxGraph standard stencils and shapes
-	private final String stencilUserMarker = "mxGraph";
+	private final String stencilUserMarker = "mxgraph";
+
+	private String sourceFolder = "";
 
 	public Svg2Xml(Svg2XmlGui gui)
 	{
@@ -131,7 +133,38 @@ public class Svg2Xml
 		boolean isLastInGroup = true;
 		boolean isNewGroup = true;
 		String groupXml = new String();
-		ByteArrayOutputStream groupBaos = new ByteArrayOutputStream();
+		ByteArrayOutputStream groupBaos = new ByteArrayOutputStream();String groupName = stencilUserMarker;
+
+
+		// =============================================================================================================
+		// NOTE: commented from upstream/master - in this repository, we don't have GUI code in the processing code!
+		// =============================================================================================================
+		// boolean areFiles = false;
+
+		//checks if files are selected too, or only folders
+		// for (int i = 0; i < gui.sourceFileListComponent.getSelectedFiles().length; i++)
+		// {
+		// 	if (gui.sourceFileListComponent.getSelectedFiles()[i].isFile())
+		// 	{
+		// 		areFiles = true;
+		// 	}
+		// }
+
+		//if files are selected too, the parent folder is the root of the group naming
+		// if (areFiles)
+		// {
+		// 	sourceFolder = gui.sourceFileListComponent.getSelectedFiles()[0].getParentFile().getParent();
+		// }
+		// else
+		// {
+		// 	sourceFolder = gui.sourceFileListComponent.getSelectedFiles()[0].getParent();
+		// }
+		// =============================================================================================================
+		// END OF "NOTE"
+		// =============================================================================================================
+
+		boolean isGroupNameInConfig = false;
+		String lastGroupName = "";
 
 		// construct destConfigDoc based on default values, groupConfigDoc and stencilConfigDoc
 		for (int i = 0; i < sourceFiles.length; i++)
@@ -139,7 +172,9 @@ public class Svg2Xml
 			System.out.println("Processing " + sourceFiles[i].getAbsolutePath());
 			groupBaos = new ByteArrayOutputStream();
 			isLastInGroup = false;
-			isNewGroup = false;
+			isNewGroup = true;
+
+			groupName = stencilUserMarker;
 
 			String shapeName = sourceFiles[i].getName();
 			shapeName = shapeName.substring(0, shapeName.lastIndexOf("."));
@@ -208,6 +243,11 @@ public class Svg2Xml
 						destConfigDoc.setAspect(aspectType.VARIABLE);
 					}
 
+					if (groupConfigRootElement.getAttribute("groupname") != null && groupConfigRootElement.getAttribute("groupname") != "")
+					{
+						groupName = groupConfigRootElement.getAttribute("groupname");
+						isGroupNameInConfig = true;
+					}
 					//TODO implement strokewidth reading
 					//					strokeWidth = groupConfigRootElement.getAttribute("strokewidth");
 					groupConnection = getConstraintsFromXml(groupConfigString);
@@ -338,11 +378,11 @@ public class Svg2Xml
 				Constraint currConstraint = constraints.get(j);
 
 				double x = currConstraint.getX() - bounds.getMinX();
-				x = Math.round(x * 100.0 / bounds.getWidth()) / 100.0;
+				x = Math.round(x * 1000.0 / bounds.getWidth()) / 1000.0;
 				currConstraint.setX(x);
 
 				double y = currConstraint.getY() - bounds.getMinY();
-				y = Math.round(y * 100.0 / bounds.getHeight()) / 100.0;
+				y = Math.round(y * 1000.0 / bounds.getHeight()) / 1000.0;
 				currConstraint.setY(y);
 			}
 
@@ -543,7 +583,7 @@ public class Svg2Xml
 					String currParent = sourceFiles[i].getParent();
 					String oldParent = sourceFiles[i-1].getParent();
 
-					if(currParent.equals(oldParent))
+					if(currParent.equals(oldParent) && i!=0)
 					{
 						isNewGroup = false;
 					}
@@ -553,7 +593,7 @@ public class Svg2Xml
 					}
 				}
 
-				//check if this is the last file in the group
+				//if this is the last file in the group
 				if (i + 1 == sourceFiles.length)
 				{
 					isLastInGroup = true;
@@ -573,28 +613,25 @@ public class Svg2Xml
 					}
 				}
 
-				// here we need some group naming check
+				// group naming check
 				String currentPath = sourceFiles[i].getAbsolutePath();
 				currentPath = currentPath.substring(2, currentPath.lastIndexOf("."));
 
+				File currFile = new File(sourceFiles[i].getAbsolutePath());
+
 				if (isNewGroup)
 				{
-					// if new group then we save the old file and open a new one
-					String groupName = stencilUserMarker;
-					File currFile = new File(sourceFiles[i].getAbsolutePath());
-					ArrayList <String> folders = new ArrayList <String>();
-
-					while (!currFile.getParentFile().getName().equals("svgroot") && currFile.getParent().length() > 4)
+					//if group name wasn't in config, generate it based on folder structure
+					if (!isGroupNameInConfig)
 					{
-						currFile = currFile.getParentFile();
-						folders.add(0, currFile.getName());
+						String fullStr = currFile.getParent().toLowerCase();
+						String currName = fullStr.replace(sourceFolder.toLowerCase(), "");
+						currName = currName.replace(File.separator, ".");
+
+						groupName = stencilUserMarker + currName;
 					}
 
-					for (int j = 0; j < folders.size(); j++)
-					{
-						groupName += "." + folders.get(j);
-					}
-
+					lastGroupName = groupName;
 					groupXml = "<shapes name=\"" + groupName + "\">" + System.getProperty("line.separator");
 					String tmp = Svg2Xml.printDocumentString(destDoc, groupBaos);
 					tmp = tmp.replaceAll("\\.0\"", "\"");
@@ -602,7 +639,7 @@ public class Svg2Xml
 				}
 				else
 				{
-					// if not a new group then we just add the xml to the group xml
+					// if not a new group, just add the xml to the group xml
 					groupXml += Svg2Xml.printDocumentString(destDoc, groupBaos);
 				}
 
@@ -615,8 +652,8 @@ public class Svg2Xml
 
 					try
 					{
-						String currentDestPath = destPath.getAbsolutePath();
-						currentDestPath += sourceFiles[i].getParent().substring(2, sourceFiles[i].getParent().length()) + ".xml";
+						String currentDestPath = destPath.getAbsolutePath() + File.separator + lastGroupName.replace(".", File.separator) + ".xml";
+
 						currentDestPath = currentDestPath.toLowerCase();
 						currentDestPath = currentDestPath.replaceAll("\\s", "_");
 						File myDestFile = new File(currentDestPath);
@@ -630,7 +667,6 @@ public class Svg2Xml
 						writer.close();
 						System.out.println("File written");
 
-//						JOptionPane.showMessageDialog(gui.getFrame(), "Conversion completed.\nThe library is genereted in:\n" + myDestRoot);
 						if (!destPaths.contains(myDestRoot))
 						{
 							destPaths.add(myDestRoot);
@@ -855,7 +891,39 @@ public class Svg2Xml
 			if (!fontSizeStr.equals(""))
 			{
 				fontSizeStr = removeUnits(fontSizeStr);
-				double fs = Double.parseDouble(fontSizeStr) * configDoc.getRelativeScalingRatio();
+				double fs = 16;
+
+				if (isNumeric(fontSizeStr))
+				{
+					fs = Double.parseDouble(fontSizeStr) * configDoc.getRelativeScalingRatio();
+				}
+				else
+				{
+					switch (fontSizeStr)
+					{
+						case "xx-small":
+							fs = 9;
+							break;
+						case "x-small":
+							fs = 10;
+							break;
+						case "small":
+							fs = 13;
+							break;
+						case "medium":
+							fs = 16;
+							break;
+						case "large":
+							fs = 18;
+							break;
+						case "x-large":
+							fs = 24;
+							break;
+						case "xx-large":
+							fs = 32;
+					}
+
+				}
 				el.setAttribute("size", Double.toString(fs));
 				node.appendChild(el);
 			}
@@ -2224,8 +2292,16 @@ public class Svg2Xml
 
 		if (destConfigDoc.isCalculateBorder())
 		{
-			double w = destConfigDoc.getStencilBoundsX() * s;
-			double h = destConfigDoc.getStencilBoundsY() * s;
+			double w = Math.round(destConfigDoc.getStencilBoundsX() * s * 1000.0) / 1000.0;
+			double h = Math.round(destConfigDoc.getStencilBoundsY() * s * 1000.0) / 1000.0;
+
+			if (!destConfigDoc.isRelativeScaling())
+			{
+				double sc = Math.min(destConfigDoc.getAbsoluteScalingX() / destConfigDoc.getStencilBoundsX(), destConfigDoc.getAbsoluteScalingY() / destConfigDoc.getStencilBoundsY());
+				w = Math.round(destConfigDoc.getStencilBoundsX() * sc * 1000.0) / 1000.0;
+				h = Math.round(destConfigDoc.getStencilBoundsY() * sc * 1000.0) / 1000.0;
+			}
+
 			root.setAttribute("w", String.valueOf(w));
 			root.setAttribute("h", String.valueOf(h));
 		}
@@ -2555,6 +2631,10 @@ public class Svg2Xml
 		}
 
 		return svgDoc;
+	}
+
+	public static boolean isNumeric(String str) {
+		  return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
 	}
 };
 
