@@ -60,6 +60,7 @@ public class Svg2XmlGui implements ActionListener{
 	protected File[] sourceFiles;
 	protected File destPath;
 
+	protected JFrame frame = new JFrame();
 	protected JRadioButton useAbsScaleComponent = new JRadioButton();
 	protected JTextField absXScaleComponent = new JTextField();
 	protected JCheckBox calculateBorderComponent = new JCheckBox();
@@ -92,7 +93,6 @@ public class Svg2XmlGui implements ActionListener{
 			return; // prevent the GUI to show up after processing
 		}
 
-		JFrame frame = new JFrame();
 
 		JPanel filePanel = new JPanel(new GridLayout(1,2));
 		JPanel settingsPanel = new JPanel();
@@ -320,6 +320,11 @@ public class Svg2XmlGui implements ActionListener{
 	public void setRelativeScaling(boolean relativeScaling) 
 	{
 		this.relativeScaling = relativeScaling;
+	}
+
+	public JFrame getFrame() 
+	{
+		return this.frame;
 	}
 
 	public double getRelativeScaleRatio() 

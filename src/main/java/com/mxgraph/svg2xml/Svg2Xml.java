@@ -25,6 +25,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -124,6 +125,8 @@ public class Svg2Xml
 		//21. write the document to a file
 
 		// TODO add SVG viewbox support, or manual setting of viewbox
+
+		ArrayList<File> destPaths = new ArrayList<File>();
 
 		boolean isLastInGroup = true;
 		boolean isNewGroup = true;
@@ -626,12 +629,20 @@ public class Svg2Xml
 						writer.write(groupXml);
 						writer.close();
 						System.out.println("File written");
+
+//						JOptionPane.showMessageDialog(gui.getFrame(), "Conversion completed.\nThe library is genereted in:\n" + myDestRoot);
+						if (!destPaths.contains(myDestRoot))
+						{
+							destPaths.add(myDestRoot);
+						}
+
 					}
 					catch(Exception ex)
 					{
 						ex.printStackTrace();
 					}
 				}
+
 			}
 			catch (Exception e)
 			{
@@ -639,6 +650,19 @@ public class Svg2Xml
 			}
 		}
 
+		String destFolders = new String();
+
+		for (int i = 0; i < destPaths.size(); i++)
+		{
+			String currPath = destPaths.get(i).getAbsolutePath();
+
+			if (!destFolders.contains(currPath))
+			{
+				destFolders = destFolders + "\n" + currPath;
+			}
+		}
+
+		JOptionPane.showMessageDialog(gui.getFrame(), "Conversion completed.\nThe libraries are genereted in:" + destFolders);
 	}
 
 	/**
