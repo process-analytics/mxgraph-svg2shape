@@ -36,6 +36,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -159,6 +160,26 @@ public class Svg2Xml
 		// {
 		// 	sourceFolder = gui.sourceFileListComponent.getSelectedFiles()[0].getParent();
 		// }
+		// Basic implementation to mimic upstream/master
+		// only used to compute the stencil groupName
+		File rootSourceFolder = null;
+		for (File sourceFile : sourceFiles) {
+			File parent = sourceFile.getParentFile().getParentFile();
+			if (rootSourceFolder == null) {
+				rootSourceFolder = parent;
+				continue;
+			}
+
+			try {
+				if (FileUtils.directoryContains(parent, rootSourceFolder)) {
+					rootSourceFolder = parent;
+				}
+			} catch (IOException e) {
+				// TODO error management
+				e.printStackTrace();
+			}
+		}
+		sourceFolder = rootSourceFolder.getAbsolutePath();
 		// =============================================================================================================
 		// END OF "NOTE"
 		// =============================================================================================================
@@ -652,24 +673,24 @@ public class Svg2Xml
 
 					try
 					{
-						String currentDestPath = destPath.getAbsolutePath() + File.separator + lastGroupName.replace(".", File.separator) + ".xml";
+						// TODO fail if unable to mkdirs (or use commons-io)
+						destPath.mkdirs();
 
-						currentDestPath = currentDestPath.toLowerCase();
-						currentDestPath = currentDestPath.replaceAll("\\s", "_");
-						File myDestFile = new File(currentDestPath);
-						System.out.println("Prepare writing to " + myDestFile);
+						String fileName = sourceFiles[i].getName();
+						fileName = fileName.substring(0, fileName.lastIndexOf('.')) + ".xml";
+						File destFile = new File(destPath, fileName);
+						System.out.println("Prepare writing to " + destFile);
 
-						File myDestRoot = new File(myDestFile.getParent());
-						myDestRoot.mkdirs();
-						FileWriter fileWriter = new FileWriter(myDestFile);
+						// TODO try-with-resource to improve resources management
+						FileWriter fileWriter = new FileWriter(destFile);
 						BufferedWriter writer = new BufferedWriter(fileWriter);
 						writer.write(groupXml);
 						writer.close();
 						System.out.println("File written");
 
-						if (!destPaths.contains(myDestRoot))
+						if (!destPaths.contains(destPath))
 						{
-							destPaths.add(myDestRoot);
+							destPaths.add(destPath);
 						}
 
 					}
