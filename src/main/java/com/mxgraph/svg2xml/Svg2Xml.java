@@ -47,6 +47,8 @@ import org.xml.sax.InputSource;
 import com.mxgraph.shape.mxStencilShape;
 import com.mxgraph.svg2xml.XmlConfig.aspectType;
 
+import static java.lang.String.format;
+
 /**
  * Executes what is defined in Svg2XmlGui
  */
@@ -102,6 +104,13 @@ public class Svg2Xml
 
 		Svg2Xml svg2Xml = new Svg2Xml();
 		svg2Xml.convertToXml(sourceFiles.toArray(new File[0]), new File(args[1]));
+	}
+
+	private boolean isInfoLogActivated = true;
+	private void logInfo(String msg) {
+		if (isInfoLogActivated) {
+			System.out.println(format("Svg2Xml [INFO] %s", msg));
+		}
 	}
 
 	public void convertToXml(File[] sourceFiles, File destPath) {
@@ -190,7 +199,7 @@ public class Svg2Xml
 		// construct destConfigDoc based on default values, groupConfigDoc and stencilConfigDoc
 		for (int i = 0; i < sourceFiles.length; i++)
 		{
-			System.out.println("Processing " + sourceFiles[i].getAbsolutePath());
+			logInfo("Processing " + sourceFiles[i].getAbsolutePath());
 			groupBaos = new ByteArrayOutputStream();
 			isLastInGroup = false;
 			isNewGroup = true;
@@ -234,7 +243,7 @@ public class Svg2Xml
 			testFile = null;
 
 			// now we have potentially both config files in String format
-			System.out.println("parsing " + shapeName + " using " + configCount + " configs");
+			logInfo("parsing " + shapeName + " using " + configCount + " configs");
 
 			ArrayList<Connection> groupConnection = null;
 
@@ -679,14 +688,14 @@ public class Svg2Xml
 						String fileName = sourceFiles[i].getName();
 						fileName = fileName.substring(0, fileName.lastIndexOf('.')) + ".xml";
 						File destFile = new File(destPath, fileName);
-						System.out.println("Prepare writing to " + destFile);
+						logInfo("Prepare writing to " + destFile);
 
 						// TODO try-with-resource to improve resources management
 						FileWriter fileWriter = new FileWriter(destFile);
 						BufferedWriter writer = new BufferedWriter(fileWriter);
 						writer.write(groupXml);
 						writer.close();
-						System.out.println("File written");
+						logInfo("File written");
 
 						if (!destPaths.contains(destPath))
 						{
