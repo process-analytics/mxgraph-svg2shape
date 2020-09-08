@@ -8,7 +8,8 @@ A set of tool to convert SVG files into mxGraph resources.
 
 This repository is based on [mxGraph svg2xml tooling](https://github.com/jgraph/svg2xml):
 ```
-SVG to XML mxGraph stencil definition translation tool. This was created for internal use, so there are lots of things unfinished.
+SVG to XML mxGraph stencil definition translation tool.
+This was created for internal use, so there are lots of things unfinished.
 ```
 
 It contains the original svg2xml tool; it aims to improve it and to add the following features
