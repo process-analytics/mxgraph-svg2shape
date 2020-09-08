@@ -6,16 +6,19 @@
 
 A set of tool to convert SVG files into mxGraph resources.
 
-This repository is based on mxGraph svg2xml tooling: `SVG to XML mxGraph stencil definition translation tool. This was
-created for internal use, so there are lots of things unfinished.`
+This repository is based on [mxGraph svg2xml tooling](https://github.com/jgraph/svg2xml):
+```
+SVG to XML mxGraph stencil definition translation tool.
+This was created for internal use, so there are lots of things unfinished.
+```
 
 It contains the original svg2xml tool; it aims to improve it and to add the following features
-- modernize [svg2xml](#svg2xml) and contribute improvements to the upstream repository (if it is still active and accept
- contributions): CLI, UI look&feel updates, implement to completed features....
-- add [xml2js](#xml2js): translate an XML mxGraph stencil definition into a set of corresponding javascript command for an
+- modernize [svg2xml](#svg2xml) and contribute improvements to the upstream repository (if it is [still active and accept
+ contributions](https://github.com/jgraph/svg2xml/pull/13#issuecomment-619573225)): CLI, UI look&feel updates, implement to complete features....
+- add [xml2js](#xml2js): translate an XML mxGraph stencil definition into a set of corresponding JavaScript/TypeScript commands for an
 easy integration in JS programs
-- add [svg2js](#svg2js): convert an SVG file into a set of `mxGraph` javascript commands
-xml2js
+- add [svg2js](#svg2js): convert an SVG file into a set of `mxGraph` JavaScript/TypeScript commands
+
 
 
 ## Build
@@ -52,6 +55,8 @@ java -jar target/mxgraph-svg2shape-*-jar-with-dependencies.jar <path_to_source> 
 
 ### GUI Quick start guide
 
+**Note**: the following is taken from the [upstream repository](https://github.com/jgraph/svg2xml)
+
 The left file system defines what files or folders you want to convert. The right one, defines the destination.
 
 If you select one file, a single stencil XML file will be generated for just that one stencil. 
@@ -79,11 +84,19 @@ If you want to reduce the size, with some compromise to precision, use rounding.
 
 ## `xml2js`
 
-**DISCLAIMER**: this tool is at its early stage and misses a lot of features. See the GitHub issues (create one for
-any questions and prior submitting a Pull Request for discussions). It is mainly developed to provide the foundation for `svg2js` 
+**DISCLAIMER**: this tool is at its early stage and misses a lot of features. See the [GitHub issues](https://github.com/process-analytics/mxgraph-svg2shape/issues)
+(create one for any questions and prior submitting a Pull Request for discussions). It is mainly developed to provide the foundation for `svg2js`
+and won't probably never support the whole mxGraph stencil format.
 
 
-**GOAL**: translate an XML mxGraph stencil definition into a set of corresponding javascript calls for an easy integration in JS programs
+**GOAL**: 
+- translate an XML mxGraph stencil definition into a set of corresponding javascript calls for an easy integration in JS programs
+- the stencil definition and the JavaScript functions are very close; the names are almost the same but the arguments order is not the same
+(have a look at `curveTo` for instance). So the tool can save you a lot of time and avoid mistakes (you would get strange painting) compared to manual
+transformations
+  - xml curve: `<curve x1='85.52' x2='39.66'..`
+  - mxAbstractCanvas2D curveTo: `canvas.curveTo(x1, y1, x2,...`
+
 
 ### Run
 
@@ -109,7 +122,11 @@ canvas.fillAndStroke();
 
 ## `svg2js`
 
-**GOAL**: convert an SVG file into a set of `mxGraph` javascript commands, by calling `svg2xml` then `xml2js` 
+**GOAL**:
+- convert an SVG file into a set of `mxGraph` javascript commands, by calling `svg2xml` then `xml2js` 
+- this is the fastest and safest way to integrate SVG into `mxGraph` shapes. That's the way used by [bpmn-visualization](https://github.com/process-analytics/bpmn-visualization-js)
+to manage the [BPMN](http://www.bpmn.org/) icons
+
 
 ### Run
 
