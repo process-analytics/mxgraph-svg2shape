@@ -122,7 +122,11 @@ canvas.fillAndStroke();
 
 ## `svg2js`
 
-**GOAL**: convert an SVG file into a set of `mxGraph` javascript commands, by calling `svg2xml` then `xml2js` 
+**GOAL**:
+- convert an SVG file into a set of `mxGraph` javascript commands, by calling `svg2xml` then `xml2js` 
+- this is the fastest and safest way to integrate SVG into `mxGraph` shapes. That's the way used by [bpmn-visualization](https://github.com/process-analytics/bpmn-visualization-js)
+to manage the [BPMN](http://www.bpmn.org/) icons
+
 
 ### Run
 
