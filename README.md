@@ -1,7 +1,7 @@
 svg2xml
 =======
 
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://github.com/process-analytics/.github/blob/main/CODE_OF_CONDUCT.md)
 
 SVG to XML mxGraph stencil definition translation tool. This was created for internal use, so there are lots of things unfinished.
 
