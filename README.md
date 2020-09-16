@@ -1,6 +1,7 @@
 # mxgraph-svg2shape
 [![Build](https://github.com/process-analytics//mxgraph-svg2shape/workflows/Build/badge.svg)](https://github.com/process-analytics/mxgraph-svg2shape/actions)
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/process-analytics/mxgraph-svg2shape?color=orange&include_prereleases)](https://github.com/process-analytics/mxgraph-svg2shape/releases)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](https://github.com/process-analytics/.github/blob/main/CODE_OF_CONDUCT.md)
 
 
 
