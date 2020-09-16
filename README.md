@@ -33,8 +33,8 @@ easy integration in JS programs
 ```
 
 Note about branches in this repository
-- `master` is not intended to receive any changes except updates from the upstream repository
-- the `develop` branch is the target for new features, fixes, .... and merge commits from `master`  
+- `upstream_master` is not intended to receive any changes except updates from the upstream repository
+- the `develop` branch is the target for new features, fixes, .... and merge commits from the upstream `master` branch  
 
 
 ## `svg2xml`
