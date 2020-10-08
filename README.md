@@ -111,6 +111,9 @@ java -cp target/mxgraph-svg2shape-*-jar-with-dependencies.jar com.mxgraph.xml2js
 
 The tool writes the generated code in the console
 ``` javascript
+// shape: shape-01
+// width: 30.5
+// height: 40.2
 // foreground
 canvas.begin();
 canvas.moveTo(19.87, 0);
