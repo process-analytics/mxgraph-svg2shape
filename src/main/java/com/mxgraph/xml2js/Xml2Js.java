@@ -1,9 +1,6 @@
 package com.mxgraph.xml2js;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -84,7 +81,13 @@ public class Xml2Js {
     }
 
     public void parseShape(Node shape) {
-        logInfo(format("Parsing shape '%s'", shape.getAttributes().getNamedItem("name").getTextContent()));
+        AttributesTextContent shapeAttributes = new AttributesTextContent(shape.getAttributes());
+        String name = shapeAttributes.text("name");
+        logInfo(format("Parsing shape '%s'", name));
+        generateComment(format("shape: %s", name));
+        generateComment(format("width: %s", shapeAttributes.text("w")));
+        generateComment(format("height: %s", shapeAttributes.text("h")));
+
         NodeList shapeChildren = shape.getChildNodes();
         for (int i = 0; i < shapeChildren.getLength(); i++) {
             Node item = shapeChildren.item(i);
@@ -96,9 +99,21 @@ public class Xml2Js {
         }
     }
 
+    private static class AttributesTextContent {
+        private final NamedNodeMap attributes;
+
+        public AttributesTextContent(NamedNodeMap attributes) {
+            this.attributes = attributes;
+        }
+
+        public String text(String attributeName) {
+            return attributes.getNamedItem(attributeName).getTextContent();
+        }
+    }
+
     private void parseForeground(Node foreground) {
         logDebug("Parsing foreground");
-        generateCode("// foreground");
+        generateComment("foreground");
         NodeList children = foreground.getChildNodes();
 
         for (int i = 0; i < children.getLength(); i++) {
@@ -124,6 +139,10 @@ public class Xml2Js {
     private void generateCode(String code) {
         logDebug("@@Generated code@@ " + code);
         codeLines.add(code);
+    }
+
+    private void generateComment(String comment) {
+        generateCode("// " + comment);
     }
 
     private void parsePath(Node path) {
