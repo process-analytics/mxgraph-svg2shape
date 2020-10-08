@@ -21,6 +21,9 @@ class Xml2JsTest {
         String xml = builder.build();
 
         assertThat(xml2Js.parseCodeLines(xml)).containsExactly(
+                "// shape: shape-01",
+                "// width: 284.03",
+                "// height: 327.7",
                 "// foreground",
                 "canvas.begin();",
                 "canvas.moveTo(141.9, 0);",
