@@ -106,7 +106,12 @@ public class Svg2Xml
 		svg2Xml.convertToXml(sourceFiles.toArray(new File[0]), new File(args[1]));
 	}
 
+	// TODO log management duplicated with Xml2Js
 	private boolean isInfoLogActivated = true;
+	public Svg2Xml infoLog(boolean activate) {
+		this.isInfoLogActivated = activate;
+		return this;
+	}
 	private void logInfo(String msg) {
 		if (isInfoLogActivated) {
 			System.out.println(format("Svg2Xml [INFO] %s", msg));

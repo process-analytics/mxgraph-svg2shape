@@ -20,16 +20,20 @@ public class Svg2Js {
 
         File svg = new File(args[0]);
         File currentDirectory = new File(System.getProperty("user.dir"));
-        File destinationDirectory = new File(currentDirectory, "mxgraph-stencil-from-svg_" + System.currentTimeMillis());
+        File tempDirectory = new File(currentDirectory, "mxgraph-stencil-from-svg_" + System.currentTimeMillis());
 
-        new Svg2Js().process(svg, destinationDirectory);
+        // TODO make log level configurable
+        String code = new Svg2Js().infoLog(true).debugLog(false).convertToJsCode(svg, tempDirectory);
+        FileUtils.deleteQuietly(tempDirectory);
+        System.out.println(code);
+        System.out.println();
     }
 
-    public void process(File svg, File tempDirectory) throws IOException {
+    public String convertToJsCode(File svg, File tempDirectory) throws IOException {
         logInfo("Start generating mxgraph JS code from SVG " + svg);
         logInfo("mxgraph stencil will be generated into " + tempDirectory);
 
-        Svg2Xml svg2Xml = new Svg2Xml();
+        Svg2Xml svg2Xml = new Svg2Xml().infoLog(isInfoLogActivated);
         svg2Xml.convertToXml(new File[]{svg}, tempDirectory);
         logInfo("SVG converted into mxgraph stencil");
 
@@ -39,14 +43,22 @@ public class Svg2Js {
         }
 
         logInfo("Converting SVG into JS code");
-        String code = new Xml2Js().infoLog(true).debugLog(false).parse(expectedGeneratedStencilFile);
-        System.out.println(code);
-        System.out.println();
-        FileUtils.deleteQuietly(tempDirectory);
-        logInfo("mxgraph JS code from SVG produced");
+        String code = new Xml2Js().infoLog(isInfoLogActivated).debugLog(isDebugLogActivated).parse(expectedGeneratedStencilFile);
+        logInfo("Conversion to JS completed");
+        return code;
     }
 
+    // TODO log management duplicated with Xml2Js
     private boolean isInfoLogActivated = true;
+    private boolean isDebugLogActivated = true;
+    public Svg2Js infoLog(boolean activate) {
+        this.isInfoLogActivated = activate;
+        return this;
+    }
+    public Svg2Js debugLog(boolean activate) {
+        this.isDebugLogActivated = activate;
+        return this;
+    }
     private void logInfo(String msg) {
         if (isInfoLogActivated) {
             System.out.println(format("Svg2Js [INFO] %s", msg));
