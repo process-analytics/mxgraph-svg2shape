@@ -132,6 +132,10 @@ public class Xml2Js {
                     case "path":
                         parsePath((Element) item);
                         break;
+                    case "stroke":
+                        logDebug("Parsing stroke");
+                        generateCanvasMethodCall("stroke()");
+                        break;
                     default:
                         logDebug("Unsupported element: " + nodeName);
                 }

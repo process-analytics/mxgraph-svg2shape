@@ -25,7 +25,8 @@ class Svg2JsTest {
                         "canvas.begin();",
                         "canvas.moveTo(0, 25);",
                         "canvas.quadTo(20, 0, 30, 25);",
-                        "canvas.quadTo(40, 50, 70, 25);"
+                        "canvas.quadTo(40, 50, 70, 25);",
+                        "canvas.stroke();"
                         )
                 );
     }
