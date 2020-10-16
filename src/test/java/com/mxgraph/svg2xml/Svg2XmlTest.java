@@ -1,5 +1,7 @@
 package com.mxgraph.svg2xml;
 
+import static com.mxgraph.FileTooling.destinationFolder;
+import static com.mxgraph.FileTooling.svgSourceFiles;
 import static com.mxgraph.utils.FileUtils.EOL;
 import static com.mxgraph.utils.FileUtils.fileContent;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,9 +12,13 @@ import java.util.Arrays;
 
 class Svg2XmlTest {
 
+    private static Svg2Xml newSvg2Xml() {
+        return new Svg2Xml().infoLog(false);
+    }
+
     @Test
     void convertToXml_single_file() {
-        Svg2Xml svg2Xml = new Svg2Xml();
+        Svg2Xml svg2Xml = newSvg2Xml();
 
         File destPath = destinationFolder("Simple-Single file");
         svg2Xml.convertToXml(svgSourceFiles("simple-01/circle-green.svg"), destPath);
@@ -29,7 +35,7 @@ class Svg2XmlTest {
 
     @Test
     void convertToXml_two_files_from_the_same_folder() {
-        Svg2Xml svg2Xml = new Svg2Xml();
+        Svg2Xml svg2Xml = newSvg2Xml();
 
         File destPath = destinationFolder("Simple-Two files");
         svg2Xml.convertToXml(svgSourceFiles("simple-01/circle-green.svg", "simple-01/rectangle-blue.svg"), destPath);
@@ -48,7 +54,7 @@ class Svg2XmlTest {
 
     @Test
     void convertToXml_files_from_two_folders_without_subfolders_files_given_ordered_by_folders() {
-        Svg2Xml svg2Xml = new Svg2Xml();
+        Svg2Xml svg2Xml = newSvg2Xml();
 
         File destPath = destinationFolder("files from 2 folders - no subfolders");
         // in the current implementation, the files are supposed to be passed ordered by folder
@@ -70,28 +76,6 @@ class Svg2XmlTest {
                 "<quad x1=\"20\" x2=\"30\" y1=\"0\" y2=\"25\"/>",
                 "<quad x1=\"40\" x2=\"70\" y1=\"50\" y2=\"25\"/>"
         );
-    }
-
-    // =================================================================================================================
-    // UTILS
-    // =================================================================================================================
-
-    private static void assertFirstLine(String fileContent, String expectedStart, String expectedEnd) {
-        String firstLine = fileContent.substring(0, fileContent.indexOf(EOL));
-        assertThat(firstLine).describedAs("1st line of the generated file")
-                .startsWith(expectedStart)
-                .endsWith(expectedEnd);
-    }
-
-    private static File[] svgSourceFiles(String... fileNames) {
-        File parent = new File(System.getProperty("user.dir"), "src/test/resources/svg"); // ensure we pass absolute path
-        return Arrays.stream(fileNames)
-                .map(fileName -> new File(parent, fileName))
-                .toArray(File[]::new);
-    }
-
-    private static File destinationFolder(String folderName) {
-        return new File("target/test/output/", folderName);
     }
 
 }

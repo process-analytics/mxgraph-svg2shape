@@ -23,6 +23,7 @@ public class Xml2Js {
         }
 
         File source = new File(args[0]);
+        // TODO make log level configurable
         String code = new Xml2Js().infoLog(true).debugLog(false).parse(source);
         System.out.println(code);
     }
@@ -92,8 +93,11 @@ public class Xml2Js {
         for (int i = 0; i < shapeChildren.getLength(); i++) {
             Node item = shapeChildren.item(i);
             if (item.getNodeType() == Node.ELEMENT_NODE) {
-                if (item.getNodeName().equals("foreground")) {
+                String nodeName = item.getNodeName();
+                if (nodeName.equals("foreground")) {
                     parseForeground(item);
+                } else {
+                    logDebug("Unsupported element: " + nodeName);
                 }
             }
         }
@@ -127,6 +131,13 @@ public class Xml2Js {
                         break;
                     case "path":
                         parsePath((Element) item);
+                        break;
+                    case "stroke":
+                        logDebug("Parsing stroke");
+                        generateCanvasMethodCall("stroke()");
+                        break;
+                    default:
+                        logDebug("Unsupported element: " + nodeName);
                 }
             }
         }
@@ -183,7 +194,13 @@ public class Xml2Js {
             case "move":
                 generateCanvasMethodCall(format("moveTo(%s, %s)", element.getAttribute("x"), element.getAttribute("y")));
                 break;
-
+            case "quad":
+                generateCanvasMethodCall(format("quadTo(%s, %s, %s, %s)",
+                        element.getAttribute("x1"), element.getAttribute("y1"),
+                        element.getAttribute("x2"), element.getAttribute("y2")));
+                break;
+            default:
+                logDebug("Unsupported element: " + nodeName);
         }
     }
 
