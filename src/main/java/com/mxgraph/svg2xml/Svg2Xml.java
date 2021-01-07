@@ -1460,8 +1460,10 @@ public class Svg2Xml
 
 						if (currEl.getNodeName().equals("linearGradient") || currEl.getNodeName().equals("radialGradient"))
 						{
-							String avgColor = getAvgGradientColor(currEl); 
-							fillTable.put(currEl.getAttribute("id"), avgColor);
+							String avgColor = getAvgGradientColor(currEl);
+							if (avgColor != null) {
+								fillTable.put(currEl.getAttribute("id"), avgColor);
+							}
 						}
 
 						fillTable.putAll(parseFillDefs(currChild));
@@ -1496,8 +1498,10 @@ public class Svg2Xml
 
 						if (currEl.getNodeName().equals("linearGradient") || currEl.getNodeName().equals("radialGradient"))
 						{
-							String avgColor = getAvgGradientColor(currEl); 
-							strokeTable.put(currEl.getAttribute("id"), avgColor);
+							String avgColor = getAvgGradientColor(currEl);
+							if (avgColor != null) {
+								strokeTable.put(currEl.getAttribute("id"), avgColor);
+							}
 						}
 
 						strokeTable.putAll(parseStrokeDefs(currChild));
@@ -1537,15 +1541,15 @@ public class Svg2Xml
 						Color col = new Color(0, 0, 0);
 						String colS = currEl.getAttribute("stop-color");
 
-						if (colS.charAt(0) == '#')
-						{
-							col = Color.decode(colS);
-						}
-						else if (colS == null || colS.equals("")) 
+						if (colS == null || colS.equals(""))
 						{
 							return null;
 						}
-						else 
+						else if (colS.charAt(0) == '#')
+						{
+							col = Color.decode(colS);
+						}
+						else
 						{
 							col = stringToColor(colS);
 						}
