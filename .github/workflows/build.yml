@@ -20,21 +20,23 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os.name }}
+    runs-on: ${{ matrix.os }}
     strategy:
       # we want to run the full build on all os: don't cancel running jobs even if one fails
       fail-fast: false
       matrix:
-        os:
-          - { name: ubuntu-24.04 }
-          - { name: macos-14 }
-          - { name: windows-22 }
+        os: [macos-14, ubuntu-24.04, windows-2022]
+        java-version: [8]
+        include:
+          # Best effort: only test newest java version on Ubuntu
+          - os: ubuntu-24.04
+            java-version: 17
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: 8
+          java-version: {{ matrix.java-version }}
       - name: build
         run: |
           ./mvnw -V package
