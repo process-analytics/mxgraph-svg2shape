@@ -78,4 +78,11 @@ class Svg2XmlTest {
         );
     }
 
+    @Test
+    void issue_upstream_24() {
+        Svg2Xml svg2Xml = newSvg2Xml();
+        File destPath = destinationFolder("upstream_issue_24");
+        svg2Xml.convertToXml(svgSourceFiles("upstream-issue-24/entry.svg"), destPath);
+    }
+
 }
