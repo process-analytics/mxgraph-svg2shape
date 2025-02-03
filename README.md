@@ -20,7 +20,7 @@ It contains the original `svg2xml` tool; it aims to improve it and to add the fo
 easy integration in JS programs
 - add [svg2js](#svg2js): convert an SVG file into a set of `mxGraph` JavaScript/TypeScript commands
 
-**NOTE**: The main purpose of this repository is to provide the svg2js tool and to use it when developing [bpmn-visualization](https://https://github.com/process-analytics/bpmn-visualization-js).
+**NOTE**: The main purpose of this repository is to provide the `svg2js` tool and to use it when developing [bpmn-visualization](https://https://github.com/process-analytics/bpmn-visualization-js).
 
 ## Build
 
