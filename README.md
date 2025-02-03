@@ -13,20 +13,21 @@ SVG to XML mxGraph stencil definition translation tool.
 This was created for internal use, so there are lots of things unfinished.
 ```
 
-It contains the original svg2xml tool; it aims to improve it and to add the following features
+It contains the original `svg2xml` tool; it aims to improve it and to add the following features
 - modernize [svg2xml](#svg2xml) and contribute improvements to the upstream repository (if it is [still active and accept
  contributions](https://github.com/jgraph/svg2xml/pull/13#issuecomment-619573225)): CLI, UI look&feel updates, implement to complete features....
 - add [xml2js](#xml2js): translate an XML mxGraph stencil definition into a set of corresponding JavaScript/TypeScript commands for an
 easy integration in JS programs
 - add [svg2js](#svg2js): convert an SVG file into a set of `mxGraph` JavaScript/TypeScript commands
 
-
+**NOTE**: The main purpose of this repository is to provide the svg2js tool and to use it when developing [bpmn-visualization](https://https://github.com/process-analytics/bpmn-visualization-js).
 
 ## Build
 
 > Requirements: JDK 8+
-> The build relies on Maven; the project uses the Maven Wrapper, no need to install Maven as the wrapper manages this
-> for you.
+> The build relies on Maven; the project uses the Maven Wrapper, no need to install Maven as the wrapper manages this for you.
+> 
+> **WARNING**: the tests are known to fail when running with JDK 21!
 
 ```
 ./mvnw package
