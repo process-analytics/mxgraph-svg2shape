@@ -28,17 +28,17 @@ import org.xml.sax.SAXException;
  * Transforms a SVG shape element to a JGraph XML element or elements, if necessary
  *
  */
-public class Shape2Xml 
+public class Shape2Xml
 {
 	protected static double lastPathX=0; // where the last path part ended
-	protected static double lastPathY=0; 
+	protected static double lastPathY=0;
 	protected static double prevPathX=0; // where the last path part ended before transforming
 	protected static double prevPathY=0;
 	protected static double lastMoveX=0; // where the last move ended
-	protected static double lastMoveY=0; 
+	protected static double lastMoveY=0;
 	protected static double prevMoveX=0; // where the last move ended before transforming
 	protected static double prevMoveY=0;
-	
+
 	/**
 	 * Parses a SVG element to an stencil XML element
 	 * @param element SVG element that is to be parsed
@@ -49,12 +49,12 @@ public class Shape2Xml
 	public static Element parse(Element element, Document xmlDoc, XmlConfig configDoc)
 	{
 		double s = configDoc.getRelativeScalingRatio();
-		
+
 		if (!configDoc.isRelativeScaling())
 		{
 			s = Math.min(configDoc.getAbsoluteScalingX() / configDoc.getStencilBoundsX(), configDoc.getAbsoluteScalingY() / configDoc.getStencilBoundsY());
 		}
-		
+
 		if (element.getNodeName().equals("rect"))
 		{
 			if (element.getAttribute("transform") != null && !element.getAttribute("transform").equals(""))
@@ -138,7 +138,7 @@ public class Shape2Xml
 
 			String pointsString = element.getAttribute("points");
 			int dn = configDoc.getDecimalsToRound();
-			
+
 			pointsString = pointsString.replaceAll("\\s{2,}", " ");
 			pointsString = pointsString.replaceAll("E -", "E-");
 			pointsString = pointsString.replaceAll("e -", "e-");
@@ -168,23 +168,23 @@ public class Shape2Xml
 					xString = pointsString.substring(0, commaIndex);
 					//read y
 					yString = pointsString.substring(commaIndex + 1, spaceIndex);
-	
+
 					x = Double.valueOf(xString);
 					y = Double.valueOf(yString);
 					x = x - configDoc.getStencilBoundsMinX();
 					y = y - configDoc.getStencilBoundsMinY();
-	
+
 					// add the new coords to the new string
 					xNew = roundToDecimals(x * s, dn);
 					yNew = roundToDecimals(y * s, dn);
-	
+
 					newPointsString += xNew + "," + yNew + " ";
-	
+
 					pointsString = pointsString.substring(spaceIndex, pointsString.length());
-	
+
 					commaIndex = pointsString.indexOf(",");
 					spaceIndex = pointsString.indexOf(" ", commaIndex + 1);
-	
+
 					if (spaceIndex==-1)
 					{
 						spaceIndex = pointsString.length();
@@ -195,42 +195,42 @@ public class Shape2Xml
 			{
 				spaceIndex = pointsString.indexOf(" ");
 				int spaceIndex2 = pointsString.indexOf(" ", spaceIndex + 1);
-				
+
 				while (spaceIndex2 != spaceIndex)
 				{
 					//read x
 					xString = pointsString.substring(0, spaceIndex);
 					//read y
 					yString = pointsString.substring(spaceIndex + 1, spaceIndex2);
-	
+
 					x = Double.valueOf(xString);
 					y = Double.valueOf(yString);
 					x = x - configDoc.getStencilBoundsMinX();
 					y = y - configDoc.getStencilBoundsMinY();
-	
+
 					// add the new coords to the new string
 					xNew = roundToDecimals(x * s, dn);
 					yNew = roundToDecimals(y * s, dn);
-	
+
 					newPointsString += xNew + "," + yNew + " ";
-	
+
 					pointsString = pointsString.substring(Math.min(spaceIndex2 + 1, pointsString.length()), pointsString.length());
-	
+
 					spaceIndex = pointsString.indexOf(" ");
 					spaceIndex2 = pointsString.indexOf(" ", spaceIndex + 1);
-	
+
 					if (spaceIndex==-1)
 					{
 						spaceIndex = pointsString.length();
 					}
-					
+
 					if (spaceIndex2==-1)
 					{
 						spaceIndex2 = pointsString.length();
 					}
 				}
 			}
-			
+
 			newPointsString = newPointsString.substring(0, (newPointsString.length() - 1));
 			newPointsString = setPathRoot(newPointsString, configDoc);
 //			String polyXML = "<path>" + System.getProperty("line.separator");
@@ -296,10 +296,10 @@ public class Shape2Xml
 				double x4 = cx-rx;
 				double y4 = cy;
 
-				String ellString = "M " + x1 + " " + y1 + 
-						" A " + rx + " " + ry + " 0 0 1 " + x2 + " " + y2 + 
-						" A " + rx + " " + ry + " 0 0 1 " + x3 + " " + y3 + 
-						" A " + rx + " " + ry + " 0 0 1 " + x4 + " " + y4 + 
+				String ellString = "M " + x1 + " " + y1 +
+						" A " + rx + " " + ry + " 0 0 1 " + x2 + " " + y2 +
+						" A " + rx + " " + ry + " 0 0 1 " + x3 + " " + y3 +
+						" A " + rx + " " + ry + " 0 0 1 " + x4 + " " + y4 +
 						" A " + rx + " " + ry + " 0 0 1 " + x1 + " " + y1 + " Z ";
 
 				ellString = matrixTransformPath(ellString, tr, configDoc);
@@ -427,7 +427,7 @@ public class Shape2Xml
 				textEl.setAttribute("align", style.getAlign());
 			}
 
-			//SVG doesn't support vertical alignment, so this is fixed			
+			//SVG doesn't support vertical alignment, so this is fixed
 			//if (!style.getVAlign().equals(""))
 			//{
 			//	textEl.setAttribute("valign", style.getVAlign());
@@ -539,7 +539,7 @@ public class Shape2Xml
 						tspanEl.setAttribute("align", style.getAlign());
 					}
 
-					//SVG doesn't support vertical alignment, so this is fixed			
+					//SVG doesn't support vertical alignment, so this is fixed
 					//if (!currStyle.get().equals(""))
 					//{
 					//	tspanEl.setAttribute("", currStyle.getVAlign());
@@ -809,12 +809,12 @@ public class Shape2Xml
 		else
 		{
 			//roundrect
-			pathString =  "M " + x1 + " " + (y1 + ry) + 
+			pathString =  "M " + x1 + " " + (y1 + ry) +
 					" v " + (h - 2 * ry) +
 					" a " + rx + " " + ry + " 0 0 0 " + rx + " " + ry +
 					" h " + (w - 2 * rx) +
 					" a " + rx + " " + ry + " 0 0 0 " + rx + " " + ( -ry) +
-					" v " + (2 * ry - h) + 
+					" v " + (2 * ry - h) +
 					" a " + rx + " " + ry + " 0 0 0 " + ( -rx) + " " + ( -ry) +
 					" h " + (2 * rx - w) +
 					" a " + rx + " " + ry + " 0 0 0 " + ( -rx) + " " + ry +
@@ -841,7 +841,7 @@ public class Shape2Xml
 	 * @param c decimals to round to (use values <0 if you want to skip rounding)
 	 * @return rounnded <b>d</b> to <b>c</b> decimals
 	 */
-	public static double roundToDecimals(double d, int c) 
+	public static double roundToDecimals(double d, int c)
 	{
 		if (c >= 0)
 		{
@@ -858,11 +858,11 @@ public class Shape2Xml
 	/**
 	 * @param parentDoc the document in which the element will be created
 	 * @param fragment fragment of XML code that needs converting
-	 * @return a DOM Elemement representation of the <b>fragment</b> string  
+	 * @return a DOM Elemement representation of the <b>fragment</b> string
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	private static Element returnXmlFragment(Document parentDoc, String fragment) 
+	private static Element returnXmlFragment(Document parentDoc, String fragment)
 	{
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = null;
@@ -921,25 +921,25 @@ public class Shape2Xml
 
 			// handle the case of two decimals (".ddddd. to .ddddd 0.")
 			 Matcher m = Pattern.compile("\\.\\d+\\.").matcher(pathString);
-			 
+
 			 while (m.find()) {
 				 pathString = pathString.substring(0, m.end() - 1) + " 0" + pathString.substring(m.end() - 1, pathString.length());
 				 m = Pattern.compile("\\.\\d+\\.").matcher(pathString);
 			 }
-			 
-			 
+
+
 			if (tr != null)
 			{
 				String newPathString = "";
-				int nextPartStartIndex; 
+				int nextPartStartIndex;
 				char prevPathType = 'm';
-				
+
 				do
 				{
 					pathString = pathString.trim();
 					nextPartStartIndex = nextPartIndex(pathString, prevPathType);
 					String currPathString = null;
-					
+
 					if (nextPartStartIndex != -1)
 					{
 						currPathString = pathString.substring(0, nextPartStartIndex);
@@ -948,9 +948,9 @@ public class Shape2Xml
 					{
 						currPathString = pathString;
 					}
-					
+
 					char currPathType = currPathString.charAt(0);
-					
+
 					if (!Character.isLetter(currPathType))
 					{
 						if (prevPathType == 'm')
@@ -965,12 +965,12 @@ public class Shape2Xml
 						{
 							currPathType = prevPathType;
 						}
-						
+
 						currPathString = currPathType + " " + currPathString;
 					}
-					
+
 					newPathString += parseMatrixTransformPathPart(currPathString, tr);
-					
+
 					if (nextPartStartIndex != -1)
 					{
 						pathString = pathString.substring(nextPartStartIndex, pathString.length());
@@ -980,8 +980,8 @@ public class Shape2Xml
 					{
 						pathString = "";
 					}
-				} 
-				
+				}
+
 				while (pathString.length() > 0);
 
 				newPathString = newPathString.substring(0, (newPathString.length() - 1));
@@ -1034,7 +1034,7 @@ public class Shape2Xml
 				prevPathX = prevMoveX;
 				prevPathY = prevMoveY;
 				return "Z ";
-			case 'z' : 
+			case 'z' :
 				prevPathX = prevMoveX;
 				prevPathY = prevMoveY;
 				return "z ";
@@ -1078,7 +1078,7 @@ public class Shape2Xml
 		double y = getPathParam(currPathString, 7);
 		double transformRot = Math.atan2(tr[1], tr[0]);
 		transformRot = Math.toDegrees(transformRot);
-		xRot = xRot + transformRot; 
+		xRot = xRot + transformRot;
 
 		if (isAbs)
 		{
@@ -1433,7 +1433,7 @@ public class Shape2Xml
 			prevPathY = y;
 			prevMoveX = prevPathX;
 			prevMoveY = prevPathY;
-			
+
 			double xNew = x * tr[0] + y * tr[2] + tr[4];
 			double yNew = x * tr[1] + y * tr[3] + tr[5];
 
@@ -1455,7 +1455,7 @@ public class Shape2Xml
 			currPathString = "M " + newAbsX + " " + newAbsY + " ";
 			lastPathX = newAbsX;
 			lastPathY = newAbsY;
-			
+
 			lastMoveX = lastPathX;
 			lastMoveY = lastPathY;
 		}
@@ -1469,9 +1469,9 @@ public class Shape2Xml
 		path = path.replaceAll(",", " ");
 		path = path.replaceAll("\\s{2,}", " ");
 		path = path.trim();
-		
+
 		char currPathType = path.charAt(0);
-		
+
 		if (!Character.isLetter(currPathType))
 		{
 			currPathType = lastPathType;
@@ -1480,52 +1480,52 @@ public class Shape2Xml
 		int numParams = 0;
 		CharSequence pathType = String.valueOf(currPathType);
 		String set = "HhVv";
-		
+
 		if (set.contains(pathType))
 		{
 			numParams = 1;
 		}
-		
+
 		set = "MmLlTt";
-		
+
 		if (set.contains(pathType))
 		{
 			numParams = 2;
 		}
-		
+
 		set = "SsQq";
-		
+
 		if (set.contains(pathType))
 		{
 			numParams = 4;
 		}
-		
+
 		set = "Cc";
-		
+
 		if (set.contains(pathType))
 		{
 			numParams = 6;
 		}
-		
+
 		set = "Aa";
-		
+
 		if (set.contains(pathType))
 		{
 			numParams = 7;
 		}
-		
+
 		int currIndex = 0;
-		
+
 		if (!(Character.isDigit(path.charAt(0)) || path.charAt(0) == '-'))
 		{
 			numParams++;
 		}
-		
-		for (int i = 0; i < numParams; ++i) 
+
+		for (int i = 0; i < numParams; ++i)
 		{
 			currIndex = path.indexOf(" ", currIndex + 1);
 		};
-		
+
 		return currIndex;
 	}
 
@@ -1543,7 +1543,7 @@ public class Shape2Xml
 			int currIndex=0;
 			int currParamIndex = 0;
 
-			if (pathString.charAt(1) != ' ')
+			if (pathString.length() >= 2 && pathString.charAt(1) != ' ')
 			{
 				pathString = pathString.substring(0, 1) + " " + pathString.substring(1, pathString.length());
 			}
@@ -1561,18 +1561,44 @@ public class Shape2Xml
 				endIndex = pathString.length();
 			}
 
-			String paramString = pathString.substring(currParamIndex, endIndex);
+			double param;
 
-			return Double.parseDouble(paramString);
-		} catch (RuntimeException e) {
-			throw new RuntimeException("Unable to get path param from '" + originalPathString + "' for index " + index, e);
-		}
+            if (pathString.charAt(0) == 'L')
+            {
+
+                String paramString = pathString.substring(currParamIndex, endIndex);
+
+                param = Double.valueOf(paramString);
+
+            }
+            else if (pathString != null && pathString != "" && pathString.length() > 1)
+            {
+                if (pathString == null)
+                {
+                    int i =1;
+                    i++;
+                }
+
+                String paramString = pathString.substring(currParamIndex, endIndex);
+
+                param = Double.valueOf(paramString);
+
+            }
+            else
+            {
+                param = 0;
+            }
+
+            return param;
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Unable to get path param from '" + originalPathString + "' for index " + index, e);
+        }
 	}
 
 	/**
 	 * sets the top left of the drawing to vector [x,y], to be used only with path parts
 	 * @param path path to transform
-	 * @param configDoc target config document 
+	 * @param configDoc target config document
 	 * @return transformed path
 	 */
 	private static String setPathRoot (String path, XmlConfig configDoc)
@@ -1632,11 +1658,11 @@ public class Shape2Xml
 				{
 					doubleValue = roundToDecimals(doubleValue, 0);
 					valueLong = valueDouble.intValue();
-					xmlOut += xmlCode.substring(endIndexOld, startIndex) + valueLong; 
+					xmlOut += xmlCode.substring(endIndexOld, startIndex) + valueLong;
 				}
 				else
 				{
-					xmlOut += xmlCode.substring(endIndexOld, startIndex) + doubleValue; 
+					xmlOut += xmlCode.substring(endIndexOld, startIndex) + doubleValue;
 				}
 
 				endIndexOld = endIndex;
@@ -1650,12 +1676,12 @@ public class Shape2Xml
 		return xmlCode;
 	}
 
-	public static String getFirstLevelTextContent(Node node) 
+	public static String getFirstLevelTextContent(Node node)
 	{
 		NodeList list = node.getChildNodes();
 		StringBuilder textContent = new StringBuilder();
 
-		for (int i = 0; i < list.getLength(); ++i) 
+		for (int i = 0; i < list.getLength(); ++i)
 		{
 			Node child = list.item(i);
 

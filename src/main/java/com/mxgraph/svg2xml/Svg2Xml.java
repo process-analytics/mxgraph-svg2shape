@@ -577,7 +577,12 @@ public class Svg2Xml
 						//16. compare the new style with the old one, and add the differences to the XML
 						styleDiff = getStyleDiff(oldStyle, currStyle);
 					}
-
+					
+//					if (currStyle.getStrokeColor() == "")
+//					{
+//						currStyle.setStrokeColor("none");
+//					}
+					
 					appendStyle(destDoc.getElementsByTagName("foreground").item(0), styleDiff, destConfigDoc, nextElement);
 
 					//18. translate the SVG element into XML
@@ -749,11 +754,11 @@ public class Svg2Xml
 		String fc = currStyle.getFillColor();
 		String sc = currStyle.getStrokeColor();
 		
-		if (!fc.equals("none") && !sc.equals("none"))
+		if (!fc.equals("none") && !sc.equals("none") && !sc.equals(""))
 		{
 			return "fillstroke";
 		}
-		else if (!fc.equals("none") && sc.equals("none"))
+		else if (!fc.equals("none"))
 		{
 			return "fill";
 		}
@@ -1461,7 +1466,10 @@ public class Svg2Xml
 						if (currEl.getNodeName().equals("linearGradient") || currEl.getNodeName().equals("radialGradient"))
 						{
 							String avgColor = getAvgGradientColor(currEl); 
-							fillTable.put(currEl.getAttribute("id"), avgColor);
+							if (avgColor != null)
+							{
+								fillTable.put(currEl.getAttribute("id"), avgColor);
+							}
 						}
 
 						fillTable.putAll(parseFillDefs(currChild));
@@ -1497,7 +1505,10 @@ public class Svg2Xml
 						if (currEl.getNodeName().equals("linearGradient") || currEl.getNodeName().equals("radialGradient"))
 						{
 							String avgColor = getAvgGradientColor(currEl); 
-							strokeTable.put(currEl.getAttribute("id"), avgColor);
+							if (avgColor != null)
+							{
+								strokeTable.put(currEl.getAttribute("id"), avgColor);
+							}
 						}
 
 						strokeTable.putAll(parseStrokeDefs(currChild));
@@ -1537,13 +1548,13 @@ public class Svg2Xml
 						Color col = new Color(0, 0, 0);
 						String colS = currEl.getAttribute("stop-color");
 
-						if (colS.charAt(0) == '#')
-						{
-							col = Color.decode(colS);
-						}
-						else if (colS == null || colS.equals("")) 
+						if (colS == null || colS.equals("")) 
 						{
 							return null;
+						}
+						else if (colS.charAt(0) == '#')
+						{
+							col = Color.decode(colS);
 						}
 						else 
 						{
